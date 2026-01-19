@@ -6,4 +6,4 @@ DOMAIN = "2e_power_stations"
 UPDATE_INTERVAL = 30
 
 # Платформи
-PLATFORMS = ["sensor", "switch", "select"]
+PLATFORMS = ["sensor", "switch", "select", "binary_sensor"]

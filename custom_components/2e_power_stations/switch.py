@@ -28,8 +28,6 @@ async def async_setup_entry(
         entities.append(PowerStationACOutputSwitch(coordinator, entry))
     if "switch_dc" in coordinator.data:
         entities.append(PowerStationDCOutputSwitch(coordinator, entry))
-    if "switch_usb" in coordinator.data:
-        entities.append(PowerStationUSBOutputSwitch(coordinator, entry))
 
     # Feature switches
     if "switch_buzzer" in coordinator.data:
@@ -104,21 +102,6 @@ class PowerStationDCOutputSwitch(PowerStationSwitchBase):
     def unique_id(self) -> str:
         """Унікальний ID перемикача."""
         return f"{self._entry.entry_id}_dc_output"
-
-
-class PowerStationUSBOutputSwitch(PowerStationSwitchBase):
-    """Перемикач USB виходу."""
-
-    def __init__(self, coordinator, entry: ConfigEntry) -> None:
-        """Ініціалізація перемикача."""
-        super().__init__(coordinator, entry, "switch_usb")
-        self._attr_name = "USB Enabled"
-        self._attr_icon = "mdi:usb-port"
-
-    @property
-    def unique_id(self) -> str:
-        """Унікальний ID перемикача."""
-        return f"{self._entry.entry_id}_usb_output"
 
 
 class PowerStationBuzzerSwitch(PowerStationSwitchBase):

@@ -13,7 +13,7 @@ Home Assistant integration for 2E Power Stations via Tuya IoT Cloud.
 
 ## Supported Models
 
-- 2E SYAYVO-BP2400_D
+- 2E SYAYVO
 
 ## Installation
 
