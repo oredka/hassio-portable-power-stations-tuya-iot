@@ -68,18 +68,6 @@ async def async_setup_entry(
     if "total_input_power" in coordinator.data or "total_output_power" in coordinator.data:
         entities.append(PowerStationBatteryPowerSensor(coordinator, entry))
 
-    # Timer sensors (read-only)
-    if "ac_off_time_set" in coordinator.data:
-        entities.append(PowerStationACOffTimeSensor(coordinator, entry))
-    if "dc_off_time_set" in coordinator.data:
-        entities.append(PowerStationDCOffTimeSensor(coordinator, entry))
-    if "led_off_time_set" in coordinator.data:
-        entities.append(PowerStationLEDOffTimeSensor(coordinator, entry))
-    if "device_standby_time_set" in coordinator.data:
-        entities.append(PowerStationStandbyTimeSensor(coordinator, entry))
-    if "display_off_time_set" in coordinator.data:
-        entities.append(PowerStationDisplayOffTimeSensor(coordinator, entry))
-
     # Other sensors
     if "temp_current" in coordinator.data:
         entities.append(PowerStationTemperatureSensor(coordinator, entry))
@@ -426,67 +414,3 @@ class PowerStationACOffTimeSensor(PowerStationSensorBase):
     @property
     def unique_id(self) -> str:
         return f"{self._entry.entry_id}_ac_off_time"
-
-    @property
-    def native_value(self) -> str | None:
-        return self.coordinator.data.get("ac_off_time_set", "unknown")
-
-
-class PowerStationDCOffTimeSensor(PowerStationSensorBase):
-    """DC Auto-Off Timer sensor (read-only)."""
-
-    _attr_name = "DC Auto-Off Time"
-    _attr_icon = "mdi:timer-off-outline"
-
-    @property
-    def unique_id(self) -> str:
-        return f"{self._entry.entry_id}_dc_off_time"
-
-    @property
-    def native_value(self) -> str | None:
-        return self.coordinator.data.get("dc_off_time_set", "unknown")
-
-
-class PowerStationLEDOffTimeSensor(PowerStationSensorBase):
-    """LED Auto-Off Timer sensor (read-only)."""
-
-    _attr_name = "LED Auto-Off Time"
-    _attr_icon = "mdi:timer-off-outline"
-
-    @property
-    def unique_id(self) -> str:
-        return f"{self._entry.entry_id}_led_off_time"
-
-    @property
-    def native_value(self) -> str | None:
-        return self.coordinator.data.get("led_off_time_set", "unknown")
-
-
-class PowerStationStandbyTimeSensor(PowerStationSensorBase):
-    """Standby Timer sensor (read-only)."""
-
-    _attr_name = "Standby Time"
-    _attr_icon = "mdi:timer-outline"
-
-    @property
-    def unique_id(self) -> str:
-        return f"{self._entry.entry_id}_standby_time"
-
-    @property
-    def native_value(self) -> str | None:
-        return self.coordinator.data.get("device_standby_time_set", "unknown")
-
-
-class PowerStationDisplayOffTimeSensor(PowerStationSensorBase):
-    """Display Auto-Off Timer sensor (read-only)."""
-
-    _attr_name = "Display Auto-Off Time"
-    _attr_icon = "mdi:monitor-off"
-
-    @property
-    def unique_id(self) -> str:
-        return f"{self._entry.entry_id}_display_off_time"
-
-    @property
-    def native_value(self) -> str | None:
-        return self.coordinator.data.get("display_off_time_set", "unknown")
