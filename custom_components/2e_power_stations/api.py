@@ -32,9 +32,13 @@ class TwoEPowerStationAPI:
 
         # Ініціалізація Tuya API
         self.api = TuyaOpenAPI(endpoint, access_id, access_secret)
-        self.api.connect()
+        response = self.api.connect()
 
-        _LOGGER.debug("Tuya API connected. Token: %s", self.api.token_info)
+        if not response.get("success", False):
+            _LOGGER.error("Failed to connect to Tuya API: %s", response)
+            raise Exception(f"Tuya API connection failed: {response.get('msg', 'Unknown error')}")
+
+        _LOGGER.debug("Tuya API connected successfully")
 
     async def close(self) -> None:
         """Закрити з'єднання."""
