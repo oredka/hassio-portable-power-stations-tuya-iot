@@ -2,24 +2,24 @@
 
 ## [0.3.6] - 2026-01-19
 
-### Додано
-- Додано GitHub Actions workflow для автоматичного створення releases
-- Створено create_github_release.py скрипт
+### Added
+- Added GitHub Actions workflow for automatic releases
+- Created create_github_release.py script
 
 ## [0.3.5] - 2026-01-19
 
-### Додано
-- Додано GitLab CI/CD конфігурацію для автоматичного створення releases
+### Added
+- Added GitLab CI/CD configuration for automatic releases
 
 ## [0.3.4] - 2026-01-19
 
-### Додано
-- Створено автоматичний GitLab Release Creator
+### Added
+- Created automatic GitLab Release Creator
 
 ## [0.3.3] - 2026-01-19
 
-### Виправлено
-- Виправлено помилку "token invalid" - додано виклик connect() для автентифікації з Tuya Cloud API
+### Fixed
+- Fixed "token invalid" error - added connect() call for Tuya Cloud API authentication
 
 ## [1.0.5] - 2025-01-19
 
