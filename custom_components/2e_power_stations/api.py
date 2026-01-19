@@ -49,9 +49,8 @@ class TwoEPowerStationAPI:
         # Отримуємо новий токен
         timestamp = str(current_time)
 
-        # Для /v1.0/token підпис формується як: client_id + t + GET + "\n\n\n" + "/v1.0/token?grant_type=1"
-        path = "/v1.0/token?grant_type=1"
-        string_to_sign = f"{self.access_id}{timestamp}GET\n\n\n{path}"
+        # Для Easy IoT API без токена: client_id + t
+        string_to_sign = f"{self.access_id}{timestamp}"
 
         signature = hmac.new(
             self.access_secret.encode('utf-8'),
@@ -66,7 +65,9 @@ class TwoEPowerStationAPI:
             "sign_method": "HMAC-SHA256",
         }
 
-        url = f"{self.endpoint}{path}"
+        _LOGGER.debug("Getting token with signature: string_to_sign=%s", string_to_sign)
+
+        url = f"{self.endpoint}/v1.0/token?grant_type=1"
         response = requests.get(url, headers=headers)
         result = response.json()
 
