@@ -14,12 +14,12 @@ _LOGGER = logging.getLogger(__name__)
 
 # LED mode options based on Tuya DP enum values
 # Mapping matches Tuya Smart app LED modes for 2E SYAYVO-BP2400_D
-# Note: Strobe mode may use different code - needs testing with actual device
 LED_MODE_OPTIONS = {
     "lamp_off": "Off",
     "lamp_10": "Low",
     "lamp_50": "Half Bright",
     "lamp_100": "High Light",
+    "lamp_flash": "Strobe",
     "lamp_sos": "SOS",
 }
 

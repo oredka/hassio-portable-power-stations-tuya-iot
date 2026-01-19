@@ -6,6 +6,6 @@
   "documentation": "https://github.com/oredka/2e-power-stations",
   "issue_tracker": "https://github.com/oredka/2e-power-stations/issues",
   "requirements": ["tuya-connector-python"],
-  "version": "1.3.0",
+  "version": "1.3.1",
   "iot_class": "cloud_polling"
 }

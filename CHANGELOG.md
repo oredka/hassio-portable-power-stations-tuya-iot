@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.3.1] - 2026-01-19
+
+### Fixed
+- Updated LED Mode options to match Tuya app exactly
+- Added missing "Strobe" mode (lamp_flash)
+
+### Changed
+- Renamed LED modes to match Tuya app: High Light, Low, Half Bright, Strobe, SOS, Off
+- Removed duplicate and unsupported brightness levels
+
 ## [1.3.0] - 2026-01-19
 
 ### Fixed
