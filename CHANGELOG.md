@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.3.6] - 2026-01-19
+
+### Додано
+- Додано GitHub Actions workflow для автоматичного створення releases
+- Створено create_github_release.py скрипт
+
 ## [0.3.5] - 2026-01-19
 
 ### Додано
