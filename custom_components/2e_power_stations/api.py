@@ -48,7 +48,11 @@ class TwoEPowerStationAPI:
 
         # Отримуємо новий токен
         timestamp = str(current_time)
-        string_to_sign = f"{self.access_id}{timestamp}"
+
+        # Для /v1.0/token підпис формується як: client_id + t + GET + "\n\n\n" + "/v1.0/token?grant_type=1"
+        path = "/v1.0/token?grant_type=1"
+        string_to_sign = f"{self.access_id}{timestamp}GET\n\n\n{path}"
+
         signature = hmac.new(
             self.access_secret.encode('utf-8'),
             string_to_sign.encode('utf-8'),
@@ -62,17 +66,19 @@ class TwoEPowerStationAPI:
             "sign_method": "HMAC-SHA256",
         }
 
-        url = f"{self.endpoint}/v1.0/token?grant_type=1"
+        url = f"{self.endpoint}{path}"
         response = requests.get(url, headers=headers)
         result = response.json()
 
         if not result.get("success"):
+            _LOGGER.error("Failed to get token: %s", result)
             raise Exception(f"Failed to get token: {result}")
 
         self.token = result["result"]["access_token"]
         # Токен валідний 2 години, оновлюємо за 5 хвилин до закінчення
         self.token_expire = current_time + (result["result"]["expire_time"] - 300) * 1000
 
+        _LOGGER.debug("Token obtained successfully, expires in %s seconds", result["result"]["expire_time"])
         return self.token
 
     def _make_request(self, method: str, path: str, body: dict = None) -> dict:
