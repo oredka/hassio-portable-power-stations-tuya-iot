@@ -34,9 +34,6 @@ class TwoEPowerStationAPI:
         self.api = TuyaOpenAPI(endpoint, access_id, access_secret, AuthType.CUSTOM)
         self.api.connect()
 
-        # Device manager для спрощеної роботи з пристроями
-        self.device_manager = TuyaDeviceManager(self.api, None)
-
     async def close(self) -> None:
         """Закрити з'єднання."""
         # Tuya SDK не потребує явного закриття
