@@ -12,14 +12,6 @@ from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
-# Можливі коди Tuya data points для перемикачів
-# Реальні коди залежать від конкретної моделі пристрою
-SWITCH_CODES = {
-    "main": ["switch", "switch_1", "main_switch"],
-    "ac": ["switch_ac", "ac_switch", "switch_2"],
-    "dc": ["switch_dc", "dc_switch", "switch_usb", "switch_3"],
-}
-
 
 async def async_setup_entry(
     hass: HomeAssistant,
@@ -29,25 +21,26 @@ async def async_setup_entry(
     """Налаштування перемикачів з config entry."""
     coordinator = hass.data[DOMAIN][entry.entry_id]
 
-    # Додаємо тільки ті перемикачі, які знайдені в даних пристрою
     entities = []
 
-    for switch_type, codes in SWITCH_CODES.items():
-        # Перевіряємо чи є хоч один з кодів у даних
-        for code in codes:
-            if code in coordinator.data:
-                if switch_type == "main":
-                    entities.append(PowerStationOutputSwitch(coordinator, entry, code))
-                elif switch_type == "ac":
-                    entities.append(PowerStationACOutputSwitch(coordinator, entry, code))
-                elif switch_type == "dc":
-                    entities.append(PowerStationDCOutputSwitch(coordinator, entry, code))
-                break  # Знайшли код, додали entity, виходимо з циклу
+    # Output switches
+    if "switch_ac" in coordinator.data:
+        entities.append(PowerStationACOutputSwitch(coordinator, entry))
+    if "switch_dc" in coordinator.data:
+        entities.append(PowerStationDCOutputSwitch(coordinator, entry))
+    if "switch_usb" in coordinator.data:
+        entities.append(PowerStationUSBOutputSwitch(coordinator, entry))
+
+    # Feature switches
+    if "switch_buzzer" in coordinator.data:
+        entities.append(PowerStationBuzzerSwitch(coordinator, entry))
+    if "led_mode" in coordinator.data:
+        entities.append(PowerStationLEDSwitch(coordinator, entry))
 
     if entities:
         async_add_entities(entities)
     else:
-        _LOGGER.warning("Не знайдено жодного перемикача в даних пристрою")
+        _LOGGER.warning("No switches found in device data")
 
 
 class PowerStationSwitchBase(CoordinatorEntity, SwitchEntity):
@@ -73,33 +66,26 @@ class PowerStationSwitchBase(CoordinatorEntity, SwitchEntity):
     async def async_turn_on(self, **kwargs: Any) -> None:
         """Увімкнути перемикач."""
         await self.hass.async_add_executor_job(
-            self.coordinator.api.set_switch, self._switch_code, True
+            self.coordinator.api.send_command, self._switch_code, True
         )
         await self.coordinator.async_request_refresh()
 
     async def async_turn_off(self, **kwargs: Any) -> None:
         """Вимкнути перемикач."""
         await self.hass.async_add_executor_job(
-            self.coordinator.api.set_switch, self._switch_code, False
+            self.coordinator.api.send_command, self._switch_code, False
         )
         await self.coordinator.async_request_refresh()
-
-
-class PowerStationOutputSwitch(PowerStationSwitchBase):
-    """Перемикач основного виходу."""
-
-    _attr_name = "Основний вихід"
-
-    @property
-    def unique_id(self) -> str:
-        """Унікальний ID перемикача."""
-        return f"{self._entry.entry_id}_main_output"
 
 
 class PowerStationACOutputSwitch(PowerStationSwitchBase):
     """Перемикач AC виходу."""
 
-    _attr_name = "AC вихід"
+    def __init__(self, coordinator, entry: ConfigEntry) -> None:
+        """Ініціалізація перемикача."""
+        super().__init__(coordinator, entry, "switch_ac")
+        self._attr_name = "AC Output"
+        self._attr_icon = "mdi:power-socket-eu"
 
     @property
     def unique_id(self) -> str:
@@ -110,9 +96,58 @@ class PowerStationACOutputSwitch(PowerStationSwitchBase):
 class PowerStationDCOutputSwitch(PowerStationSwitchBase):
     """Перемикач DC виходу."""
 
-    _attr_name = "DC вихід"
+    def __init__(self, coordinator, entry: ConfigEntry) -> None:
+        """Ініціалізація перемикача."""
+        super().__init__(coordinator, entry, "switch_dc")
+        self._attr_name = "DC Output"
+        self._attr_icon = "mdi:power-plug-outline"
 
     @property
     def unique_id(self) -> str:
         """Унікальний ID перемикача."""
         return f"{self._entry.entry_id}_dc_output"
+
+
+class PowerStationUSBOutputSwitch(PowerStationSwitchBase):
+    """Перемикач USB виходу."""
+
+    def __init__(self, coordinator, entry: ConfigEntry) -> None:
+        """Ініціалізація перемикача."""
+        super().__init__(coordinator, entry, "switch_usb")
+        self._attr_name = "USB Output"
+        self._attr_icon = "mdi:usb-port"
+
+    @property
+    def unique_id(self) -> str:
+        """Унікальний ID перемикача."""
+        return f"{self._entry.entry_id}_usb_output"
+
+
+class PowerStationBuzzerSwitch(PowerStationSwitchBase):
+    """Перемикач звукового сигналу."""
+
+    def __init__(self, coordinator, entry: ConfigEntry) -> None:
+        """Ініціалізація перемикача."""
+        super().__init__(coordinator, entry, "switch_buzzer")
+        self._attr_name = "Buzzer"
+        self._attr_icon = "mdi:volume-high"
+
+    @property
+    def unique_id(self) -> str:
+        """Унікальний ID перемикача."""
+        return f"{self._entry.entry_id}_buzzer"
+
+
+class PowerStationLEDSwitch(PowerStationSwitchBase):
+    """Перемикач LED підсвітки."""
+
+    def __init__(self, coordinator, entry: ConfigEntry) -> None:
+        """Ініціалізація перемикача."""
+        super().__init__(coordinator, entry, "led_mode")
+        self._attr_name = "LED Mode"
+        self._attr_icon = "mdi:lightbulb-outline"
+
+    @property
+    def unique_id(self) -> str:
+        """Унікальний ID перемикача."""
+        return f"{self._entry.entry_id}_led_mode"

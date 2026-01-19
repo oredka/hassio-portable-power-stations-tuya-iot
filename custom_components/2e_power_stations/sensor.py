@@ -14,6 +14,8 @@ from homeassistant.const import (
     UnitOfEnergy,
     UnitOfElectricCurrent,
     UnitOfElectricPotential,
+    UnitOfTemperature,
+    UnitOfFrequency,
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -22,13 +24,6 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
-
-# Можливі коди Tuya data points для різних параметрів
-# Ці коди можуть відрізнятися залежно від конкретної моделі
-BATTERY_CODES = ["battery_percentage", "va_battery", "battery", "battery_value"]
-POWER_CODES = ["cur_power", "power", "output_power"]
-VOLTAGE_CODES = ["cur_voltage", "voltage"]
-CURRENT_CODES = ["cur_current", "current"]
 
 
 async def async_setup_entry(
@@ -39,12 +34,44 @@ async def async_setup_entry(
     """Налаштування датчиків з config entry."""
     coordinator = hass.data[DOMAIN][entry.entry_id]
 
+    # Base sensors - always add
     entities = [
         PowerStationBatterySensor(coordinator, entry),
-        PowerStationPowerSensor(coordinator, entry),
-        PowerStationVoltageSensor(coordinator, entry),
-        PowerStationCurrentSensor(coordinator, entry),
     ]
+
+    # Power sensors - add if available in data
+    if "total_input_power" in coordinator.data:
+        entities.append(PowerStationInputPowerSensor(coordinator, entry))
+    if "total_output_power" in coordinator.data:
+        entities.append(PowerStationOutputPowerSensor(coordinator, entry))
+    if "ac_output_power" in coordinator.data:
+        entities.append(PowerStationACPowerSensor(coordinator, entry))
+    if "dc_output_power" in coordinator.data:
+        entities.append(PowerStationDCPowerSensor(coordinator, entry))
+
+    # USB power sensors
+    if "usb1_output_power" in coordinator.data:
+        entities.append(PowerStationUSBPowerSensor(coordinator, entry, 1))
+    if "usb2_output_power" in coordinator.data:
+        entities.append(PowerStationUSBPowerSensor(coordinator, entry, 2))
+    if "usb3_output_power" in coordinator.data:
+        entities.append(PowerStationUSBPowerSensor(coordinator, entry, 3))
+    if "usb4_output_power" in coordinator.data:
+        entities.append(PowerStationUSBPowerSensor(coordinator, entry, 4))
+    if "usb_c1_output_power" in coordinator.data:
+        entities.append(PowerStationUSBCPowerSensor(coordinator, entry, 1))
+    if "usb_c2_output_power" in coordinator.data:
+        entities.append(PowerStationUSBCPowerSensor(coordinator, entry, 2))
+
+    # Other sensors
+    if "temp_current" in coordinator.data:
+        entities.append(PowerStationTemperatureSensor(coordinator, entry))
+    if "ac_voltage_freq" in coordinator.data:
+        entities.append(PowerStationFrequencySensor(coordinator, entry))
+    if "error_code" in coordinator.data:
+        entities.append(PowerStationErrorSensor(coordinator, entry))
+    if "input_type" in coordinator.data:
+        entities.append(PowerStationInputTypeSensor(coordinator, entry))
 
     async_add_entities(entities)
 
@@ -63,19 +90,11 @@ class PowerStationSensorBase(CoordinatorEntity, SensorEntity):
             "model": "Power Station",
         }
 
-    def _get_value_from_codes(self, codes: list[str], default: Any = None) -> Any:
-        """Отримати значення з першого знайденого коду."""
-        for code in codes:
-            value = self.coordinator.data.get(code)
-            if value is not None:
-                return value
-        return default
-
 
 class PowerStationBatterySensor(PowerStationSensorBase):
     """Датчик рівня батареї."""
 
-    _attr_name = "Рівень батареї"
+    _attr_name = "Battery Level"
     _attr_native_unit_of_measurement = PERCENTAGE
     _attr_device_class = SensorDeviceClass.BATTERY
     _attr_state_class = SensorStateClass.MEASUREMENT
@@ -88,13 +107,103 @@ class PowerStationBatterySensor(PowerStationSensorBase):
     @property
     def native_value(self) -> int | None:
         """Поточне значення датчика."""
-        return self._get_value_from_codes(BATTERY_CODES, 0)
+        return self.coordinator.data.get("battery_percentage", 0)
 
 
-class PowerStationPowerSensor(PowerStationSensorBase):
-    """Датчик поточної потужності."""
+class PowerStationInputPowerSensor(PowerStationSensorBase):
+    """Датчик вхідної потужності."""
 
-    _attr_name = "Поточна потужність"
+    _attr_name = "Input Power"
+    _attr_native_unit_of_measurement = UnitOfPower.WATT
+    _attr_device_class = SensorDeviceClass.POWER
+    _attr_state_class = SensorStateClass.MEASUREMENT
+    _attr_icon = "mdi:transmission-tower-import"
+
+    @property
+    def unique_id(self) -> str:
+        """Унікальний ID датчика."""
+        return f"{self._entry.entry_id}_input_power"
+
+    @property
+    def native_value(self) -> float | None:
+        """Поточне значення датчика."""
+        power = self.coordinator.data.get("total_input_power", 0)
+        return float(power) / 10.0 if power > 1000 else float(power)
+
+
+class PowerStationOutputPowerSensor(PowerStationSensorBase):
+    """Датчик вихідної потужності."""
+
+    _attr_name = "Output Power"
+    _attr_native_unit_of_measurement = UnitOfPower.WATT
+    _attr_device_class = SensorDeviceClass.POWER
+    _attr_state_class = SensorStateClass.MEASUREMENT
+    _attr_icon = "mdi:transmission-tower-export"
+
+    @property
+    def unique_id(self) -> str:
+        """Унікальний ID датчика."""
+        return f"{self._entry.entry_id}_output_power"
+
+    @property
+    def native_value(self) -> float | None:
+        """Поточне значення датчика."""
+        power = self.coordinator.data.get("total_output_power", 0)
+        return float(power) / 10.0 if power > 1000 else float(power)
+
+
+class PowerStationACPowerSensor(PowerStationSensorBase):
+    """Датчик потужності AC виходу."""
+
+    _attr_name = "AC Output Power"
+    _attr_native_unit_of_measurement = UnitOfPower.WATT
+    _attr_device_class = SensorDeviceClass.POWER
+    _attr_state_class = SensorStateClass.MEASUREMENT
+    _attr_icon = "mdi:power-plug-outline"
+
+    @property
+    def unique_id(self) -> str:
+        """Унікальний ID датчика."""
+        return f"{self._entry.entry_id}_ac_power"
+
+    @property
+    def native_value(self) -> float | None:
+        """Поточне значення датчика."""
+        power = self.coordinator.data.get("ac_output_power", 0)
+        return float(power) / 10.0 if power > 1000 else float(power)
+
+
+class PowerStationDCPowerSensor(PowerStationSensorBase):
+    """Датчик потужності DC виходу."""
+
+    _attr_name = "DC Output Power"
+    _attr_native_unit_of_measurement = UnitOfPower.WATT
+    _attr_device_class = SensorDeviceClass.POWER
+    _attr_state_class = SensorStateClass.MEASUREMENT
+    _attr_icon = "mdi:power-plug-outline"
+
+    @property
+    def unique_id(self) -> str:
+        """Унікальний ID датчика."""
+        return f"{self._entry.entry_id}_dc_power"
+
+    @property
+    def native_value(self) -> float | None:
+        """Поточне значення датчика."""
+        power = self.coordinator.data.get("dc_output_power", 0)
+        return float(power) / 10.0 if power > 1000 else float(power)
+
+
+class PowerStationUSBPowerSensor(PowerStationSensorBase):
+    """Датчик потужності USB порту."""
+
+    def __init__(self, coordinator, entry: ConfigEntry, port_num: int) -> None:
+        """Ініціалізація датчика."""
+        super().__init__(coordinator, entry)
+        self._port_num = port_num
+        self._attr_name = f"USB{port_num} Output Power"
+        self._attr_icon = "mdi:usb-port"
+
     _attr_native_unit_of_measurement = UnitOfPower.WATT
     _attr_device_class = SensorDeviceClass.POWER
     _attr_state_class = SensorStateClass.MEASUREMENT
@@ -102,59 +211,113 @@ class PowerStationPowerSensor(PowerStationSensorBase):
     @property
     def unique_id(self) -> str:
         """Унікальний ID датчика."""
-        return f"{self._entry.entry_id}_power"
+        return f"{self._entry.entry_id}_usb{self._port_num}_power"
 
     @property
     def native_value(self) -> float | None:
         """Поточне значення датчика."""
-        power = self._get_value_from_codes(POWER_CODES, 0)
-        # Tuya часто повертає потужність в деці-ватах або мілі-ватах
-        if power > 10000:
-            return power / 10.0
-        return float(power)
+        power = self.coordinator.data.get(f"usb{self._port_num}_output_power", 0)
+        return float(power) / 10.0 if power > 1000 else float(power)
 
 
-class PowerStationVoltageSensor(PowerStationSensorBase):
-    """Датчик напруги."""
+class PowerStationUSBCPowerSensor(PowerStationSensorBase):
+    """Датчик потужності USB-C порту."""
 
-    _attr_name = "Напруга"
-    _attr_native_unit_of_measurement = UnitOfElectricPotential.VOLT
-    _attr_device_class = SensorDeviceClass.VOLTAGE
+    def __init__(self, coordinator, entry: ConfigEntry, port_num: int) -> None:
+        """Ініціалізація датчика."""
+        super().__init__(coordinator, entry)
+        self._port_num = port_num
+        self._attr_name = f"USB-C{port_num} Output Power"
+        self._attr_icon = "mdi:usb-port"
+
+    _attr_native_unit_of_measurement = UnitOfPower.WATT
+    _attr_device_class = SensorDeviceClass.POWER
     _attr_state_class = SensorStateClass.MEASUREMENT
 
     @property
     def unique_id(self) -> str:
         """Унікальний ID датчика."""
-        return f"{self._entry.entry_id}_voltage"
+        return f"{self._entry.entry_id}_usbc{self._port_num}_power"
 
     @property
     def native_value(self) -> float | None:
         """Поточне значення датчика."""
-        voltage = self._get_value_from_codes(VOLTAGE_CODES, 0)
-        # Tuya часто повертає напругу в деці-вольтах
-        if voltage > 1000:
-            return voltage / 10.0
-        return float(voltage)
+        power = self.coordinator.data.get(f"usb_c{self._port_num}_output_power", 0)
+        return float(power) / 10.0 if power > 1000 else float(power)
 
 
-class PowerStationCurrentSensor(PowerStationSensorBase):
-    """Датчик струму."""
+class PowerStationTemperatureSensor(PowerStationSensorBase):
+    """Датчик температури."""
 
-    _attr_name = "Струм"
-    _attr_native_unit_of_measurement = UnitOfElectricCurrent.AMPERE
-    _attr_device_class = SensorDeviceClass.CURRENT
+    _attr_name = "Temperature"
+    _attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
+    _attr_device_class = SensorDeviceClass.TEMPERATURE
     _attr_state_class = SensorStateClass.MEASUREMENT
 
     @property
     def unique_id(self) -> str:
         """Унікальний ID датчика."""
-        return f"{self._entry.entry_id}_current"
+        return f"{self._entry.entry_id}_temperature"
 
     @property
     def native_value(self) -> float | None:
         """Поточне значення датчика."""
-        current = self._get_value_from_codes(CURRENT_CODES, 0)
-        # Tuya часто повертає струм в мілі-амперах
-        if current > 100:
-            return current / 1000.0
-        return float(current)
+        temp = self.coordinator.data.get("temp_current", 0)
+        return float(temp)
+
+
+class PowerStationFrequencySensor(PowerStationSensorBase):
+    """Датчик частоти AC напруги."""
+
+    _attr_name = "AC Frequency"
+    _attr_native_unit_of_measurement = UnitOfFrequency.HERTZ
+    _attr_device_class = SensorDeviceClass.FREQUENCY
+    _attr_state_class = SensorStateClass.MEASUREMENT
+    _attr_icon = "mdi:sine-wave"
+
+    @property
+    def unique_id(self) -> str:
+        """Унікальний ID датчика."""
+        return f"{self._entry.entry_id}_frequency"
+
+    @property
+    def native_value(self) -> float | None:
+        """Поточне значення датчика."""
+        freq = self.coordinator.data.get("ac_voltage_freq", 0)
+        return float(freq)
+
+
+class PowerStationErrorSensor(PowerStationSensorBase):
+    """Датчик коду помилки."""
+
+    _attr_name = "Error Code"
+    _attr_icon = "mdi:alert-circle-outline"
+
+    @property
+    def unique_id(self) -> str:
+        """Унікальний ID датчика."""
+        return f"{self._entry.entry_id}_error_code"
+
+    @property
+    def native_value(self) -> str | None:
+        """Поточне значення датчика."""
+        error = self.coordinator.data.get("error_code", 0)
+        return str(error) if error else "No errors"
+
+
+class PowerStationInputTypeSensor(PowerStationSensorBase):
+    """Датчик типу вхідного живлення."""
+
+    _attr_name = "Input Type"
+    _attr_icon = "mdi:power-plug"
+
+    @property
+    def unique_id(self) -> str:
+        """Унікальний ID датчика."""
+        return f"{self._entry.entry_id}_input_type"
+
+    @property
+    def native_value(self) -> str | None:
+        """Поточне значення датчика."""
+        input_type = self.coordinator.data.get("input_type", "unknown")
+        return str(input_type)
