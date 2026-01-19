@@ -31,19 +31,11 @@ class TwoEPowerStationAPI:
         self.endpoint = endpoint
 
         # Ініціалізація Tuya API
-        _LOGGER.debug("Connecting to Tuya API - Endpoint: %s, Access ID: %s...", endpoint, access_id[:8])
+        # Для Cloud Project API не потрібно викликати connect()
+        # Токен генерується автоматично при кожному запиті
+        _LOGGER.debug("Initializing Tuya API - Endpoint: %s, Access ID: %s...", endpoint, access_id[:8])
         self.api = TuyaOpenAPI(endpoint, access_id, access_secret)
-        response = self.api.connect()
-
-        _LOGGER.debug("Tuya API connect response: %s", response)
-
-        if not response.get("success", False):
-            _LOGGER.error("Failed to connect to Tuya API: %s", response)
-            error_msg = response.get('msg', 'Unknown error')
-            error_code = response.get('code', 'N/A')
-            raise Exception(f"Tuya API connection failed (code {error_code}): {error_msg}. Check your Access ID, Access Secret, and endpoint region.")
-
-        _LOGGER.debug("Tuya API connected successfully")
+        _LOGGER.debug("Tuya API initialized")
 
     async def close(self) -> None:
         """Закрити з'єднання."""
