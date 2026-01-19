@@ -105,7 +105,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             data_schema=STEP_USER_DATA_SCHEMA,
             errors=errors,
             description_placeholders={
-                "setup_info": "Отримайте Access ID, Access Secret та Device ID з Tuya IoT Platform (iot.tuya.com)"
+                "setup_info": "1. Зареєструйтесь на https://iot.tuya.com\n2. Створіть Cloud Project\n3. Підключіть API: Industry Solutions -> Smart Home\n4. Додайте пристрій до проєкту\n5. Скопіюйте Access ID, Access Secret та Device ID"
             },
         )
 
