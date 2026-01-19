@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.1] - 2026-01-19
+
+### Fixed
+- Fixed HACS integration name display - now shows "Portable Power Stations (Tuya IoT)" instead of "2E Power Stations"
+- Updated hacs.json with complete domain list (sensor, switch, select, binary_sensor)
+
 ## [1.0.0] - 2026-01-19
 
 ### Initial Release
