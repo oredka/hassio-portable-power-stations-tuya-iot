@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.2] - 2026-01-19
+
+### Added
+- TROUBLESHOOTING.md with solutions for common issues (icon display, LED Mode)
+
+### Fixed
+- Documentation for icon display issues and browser cache clearing
+
 ## [1.2.1] - 2026-01-19
 
 ### Added
