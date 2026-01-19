@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.0.2] - 2026-01-19
+
+### Added
+- Added 5 timer select entities: AC Auto-Off Time, DC Auto-Off Time, LED Auto-Off Time, Standby Time, Display Auto-Off Time
+- Full control over all device settings including power management timers
+
+### Changed
+- Renamed entities to match EcoFlow naming convention (e.g., "Main Battery Level", "Total In Power", "AC Enabled")
+- LED Mode moved from sensor to select entity for proper control
+
+### Fixed
+- Fixed LED mode control - now properly supports all modes (Off, 10%, 30%, 50%, 100%, Breathing, SOS)
+
 ## [1.0.1] - 2026-01-19
 
 ### Fixed
