@@ -92,18 +92,13 @@ async def async_setup_entry(
 
     entities = []
 
+    # LED Mode is the only writable select entity
     if "led_mode" in coordinator.data:
         entities.append(PowerStationLEDModeSelect(coordinator, entry))
-    if "ac_off_time_set" in coordinator.data:
-        entities.append(PowerStationACOffTimeSelect(coordinator, entry))
-    if "dc_off_time_set" in coordinator.data:
-        entities.append(PowerStationDCOffTimeSelect(coordinator, entry))
-    if "led_off_time_set" in coordinator.data:
-        entities.append(PowerStationLEDOffTimeSelect(coordinator, entry))
-    if "device_standby_time_set" in coordinator.data:
-        entities.append(PowerStationStandbyTimeSelect(coordinator, entry))
-    if "display_off_time_set" in coordinator.data:
-        entities.append(PowerStationDisplayOffTimeSelect(coordinator, entry))
+
+    # Timer settings are read-only via Tuya API (error 2008: command not supported)
+    # They can only be changed through the device physical buttons or Tuya app
+    # Removed: AC/DC/LED auto-off time, Standby time, Display off time selects
 
     if entities:
         async_add_entities(entities)

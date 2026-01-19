@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.4.0] - 2026-01-19
+
+### Breaking Changes
+- Removed timer select entities (AC/DC/LED auto-off, Standby, Display off) - they are read-only via Tuya API
+- Timers now available as sensors (read-only) - can only be changed via device buttons or Tuya app
+
+### Fixed
+- Eliminated "command or value not support" errors for timer settings
+- Fixed lamp_flash not in options map warning
+
+### Added
+- Timer sensors for monitoring: AC Auto-Off Time, DC Auto-Off Time, LED Auto-Off Time, Standby Time, Display Auto-Off Time
+
 ## [1.3.1] - 2026-01-19
 
 ### Fixed
