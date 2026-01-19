@@ -56,7 +56,7 @@ class TwoEPowerStationAPI:
             self.access_secret.encode('utf-8'),
             string_to_sign.encode('utf-8'),
             hashlib.sha256
-        ).hexdigest().upper()
+        ).hexdigest().lower()
 
         headers = {
             "client_id": self.access_id,
@@ -99,7 +99,7 @@ class TwoEPowerStationAPI:
             self.access_secret.encode('utf-8'),
             string_to_sign.encode('utf-8'),
             hashlib.sha256
-        ).hexdigest().upper()
+        ).hexdigest().lower()
 
         headers = {
             "client_id": self.access_id,
