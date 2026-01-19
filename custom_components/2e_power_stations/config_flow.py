@@ -53,8 +53,9 @@ def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str, Any]:
     )
 
     # Перевіряємо з'єднання
-    if not api.test_connection():
-        raise Exception("Не вдалося з'єднатися з Tuya Cloud або знайти пристрій")
+    success, error_msg = api.test_connection()
+    if not success:
+        raise Exception(error_msg or "Failed to connect to Tuya Cloud")
 
     # Отримуємо інформацію про пристрій
     device_info = api.get_device_info()
@@ -96,8 +97,11 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     title=info["title"],
                     data=user_input,
                 )
+            except PermissionError as err:
+                _LOGGER.error("Permission error: %s", err)
+                errors["base"] = "permission_denied"
             except Exception as err:
-                _LOGGER.error("Помилка налаштування: %s", err)
+                _LOGGER.error("Setup error: %s", err)
                 errors["base"] = "cannot_connect"
 
         return self.async_show_form(

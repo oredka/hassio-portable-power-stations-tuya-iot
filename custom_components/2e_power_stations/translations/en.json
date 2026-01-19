@@ -19,7 +19,8 @@
       }
     },
     "error": {
-      "cannot_connect": "Failed to connect to Tuya Cloud. Check your credentials and internet connection."
+      "cannot_connect": "Failed to connect to Tuya Cloud. Check your credentials and internet connection.",
+      "permission_denied": "Permission denied (code 1106). Please link your device:\n1. Go to Tuya IoT Platform\n2. Cloud → Development → Link Tuya App Account\n3. Authorize using your Smart Life app credentials\n4. Ensure device appears in Devices tab"
     },
     "abort": {
       "already_configured": "This device is already configured"

@@ -63,6 +63,10 @@ class TwoEPowerStationAPI:
 
         Returns:
             Словник з інформацією про пристрій
+
+        Raises:
+            PermissionError: Якщо немає доступу до пристрою (код 1106)
+            ConnectionError: Якщо інша помилка підключення
         """
         _LOGGER.debug("Requesting device info for device_id: %s", self.device_id)
         response = self.api.get(f"/v1.0/devices/{self.device_id}")
@@ -71,8 +75,22 @@ class TwoEPowerStationAPI:
         if response.get("success"):
             return response.get("result", {})
         else:
-            _LOGGER.error("Помилка отримання інформації про пристрій: %s", response)
-            return {}
+            error_code = response.get("code")
+            error_msg = response.get("msg", "Unknown error")
+
+            if error_code == 1106:
+                _LOGGER.error(
+                    "Permission denied (1106) for device %s. "
+                    "Please ensure the device is linked to your Cloud Project via App Account authorization.",
+                    self.device_id
+                )
+                raise PermissionError(
+                    f"Permission denied for device {self.device_id}. "
+                    "Device must be authorized in Tuya IoT Platform via App Account."
+                )
+
+            _LOGGER.error("Error getting device info: %s", response)
+            raise ConnectionError(f"Failed to get device info: {error_msg} (code: {error_code})")
 
     def send_command(self, code: str, value: Any) -> bool:
         """Відправити команду пристрою.
@@ -139,15 +157,25 @@ class TwoEPowerStationAPI:
         status = self.get_device_status()
         return status.get(switch_code, False)
 
-    def test_connection(self) -> bool:
+    def test_connection(self) -> tuple[bool, str]:
         """Перевірити з'єднання з Tuya Cloud.
 
         Returns:
-            True якщо з'єднання успішне
+            Tuple of (success: bool, error_message: str)
         """
         try:
             info = self.get_device_info()
-            return bool(info)
+            return (True, "")
+        except PermissionError as err:
+            error_msg = (
+                "Permission denied. Please authorize your device:\n"
+                "1. Go to Tuya IoT Platform\n"
+                "2. Cloud → Development → Link Tuya App Account\n"
+                "3. Add your device using Smart Life app credentials\n"
+                "4. Ensure device is visible in 'Devices' tab"
+            )
+            _LOGGER.error("Permission error: %s", err)
+            return (False, error_msg)
         except Exception as err:
-            _LOGGER.error("Помилка перевірки з'єднання: %s", err)
-            return False
+            _LOGGER.error("Connection test failed: %s", err)
+            return (False, str(err))
