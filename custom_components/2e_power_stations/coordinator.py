@@ -58,6 +58,11 @@ class TwoEPowerStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             # Логуємо отримані data points для налагодження
             _LOGGER.debug("Отримано статус з Tuya: %s", status)
 
+            # Логуємо конкретно led_mode для діагностики
+            if "led_mode" in status:
+                _LOGGER.info("LED Mode data point value: %s (type: %s)",
+                            status["led_mode"], type(status["led_mode"]))
+
             # Повертаємо весь статус - він містить всі data points з Tuya
             # Кожен сенсор/перемикач буде брати свій data point
             return status

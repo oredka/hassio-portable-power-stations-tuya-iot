@@ -146,8 +146,11 @@ class PowerStationLEDModeSelect(PowerStationSelectBase):
     def current_option(self) -> str | None:
         """Return current selected option."""
         current_value = self.coordinator.data.get(self._dp_code)
+        _LOGGER.debug("LED Mode current value: %s (type: %s)", current_value, type(current_value))
         if current_value in self._options_map:
             return self._options_map[current_value]
+        # Log available options if value not found
+        _LOGGER.warning("LED Mode value '%s' not in options map: %s", current_value, self._options_map)
         return None
 
     async def async_select_option(self, option: str) -> None:
@@ -159,10 +162,15 @@ class PowerStationLEDModeSelect(PowerStationSelectBase):
                 break
 
         if tuya_value:
-            await self.hass.async_add_executor_job(
+            _LOGGER.debug("Setting LED Mode to: %s (Tuya value: %s)", option, tuya_value)
+            success = await self.hass.async_add_executor_job(
                 self.coordinator.api.send_command, self._dp_code, tuya_value
             )
+            if not success:
+                _LOGGER.error("Failed to set LED Mode to %s", option)
             await self.coordinator.async_request_refresh()
+        else:
+            _LOGGER.error("Could not find Tuya value for option: %s", option)
 
 
 class PowerStationACOffTimeSelect(PowerStationSelectBase):
