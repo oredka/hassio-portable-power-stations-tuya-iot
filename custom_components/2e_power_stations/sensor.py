@@ -267,24 +267,21 @@ class PowerStationTemperatureSensor(PowerStationSensorBase):
 
 
 class PowerStationFrequencySensor(PowerStationSensorBase):
-    """Датчик частоти AC напруги."""
+    """Датчик напруги та частоти AC."""
 
-    _attr_name = "AC Frequency"
-    _attr_native_unit_of_measurement = UnitOfFrequency.HERTZ
-    _attr_device_class = SensorDeviceClass.FREQUENCY
-    _attr_state_class = SensorStateClass.MEASUREMENT
+    _attr_name = "AC Voltage/Frequency"
     _attr_icon = "mdi:sine-wave"
 
     @property
     def unique_id(self) -> str:
         """Унікальний ID датчика."""
-        return f"{self._entry.entry_id}_frequency"
+        return f"{self._entry.entry_id}_ac_voltage_freq"
 
     @property
-    def native_value(self) -> float | None:
+    def native_value(self) -> str | None:
         """Поточне значення датчика."""
-        freq = self.coordinator.data.get("ac_voltage_freq", 0)
-        return float(freq)
+        freq = self.coordinator.data.get("ac_voltage_freq", "Unknown")
+        return str(freq)
 
 
 class PowerStationErrorSensor(PowerStationSensorBase):
