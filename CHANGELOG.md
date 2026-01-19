@@ -1,11 +1,16 @@
 # Changelog
 
+## [1.0.1] - 2026-01-19
+
+### Fixed
+- Fixed ValueError in ac_voltage_freq sensor - now handles string values like "230V_50HZ"
+
 ## [1.0.0] - 2026-01-19
 
 ### Added
 - Full integration with Tuya IoT Cloud for 2E Power Stations
 - Complete support for all device Data Points (DPs)
-- Sensors: Battery, Input/Output Power, AC/DC/USB Power, Temperature, AC Frequency, Error Code
+- Sensors: Battery, Input/Output Power, AC/DC/USB Power, Temperature, AC Voltage/Frequency, Error Code
 - Switches: AC/DC/USB Outputs, Buzzer, LED Mode
 - Energy Dashboard support with proper device classes
 - Automatic device discovery and setup via config flow
