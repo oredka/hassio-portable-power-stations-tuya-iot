@@ -1,10 +1,15 @@
 # Changelog
 
+## [1.1.1] - 2026-01-19
+
+### Changed
+- Fixed GitHub Actions release workflow to use native actions
+- Removed Energy Dashboard documentation file
+
 ## [1.1.0] - 2026-01-19
 
 ### Added
 - Battery Power sensor for Energy Dashboard integration (sensor.battery_power)
-- Energy Dashboard documentation with setup instructions (ENERGY_DASHBOARD.md)
 - Support for Home Assistant Energy Dashboard battery configuration
 
 ### Changed

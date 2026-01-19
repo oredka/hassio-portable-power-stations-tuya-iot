@@ -9,7 +9,6 @@ Home Assistant integration for 2E Power Stations via Tuya IoT Cloud.
 - **Temperature & Frequency** - Device temperature and AC frequency sensors
 - **Output controls** - AC/DC/USB output switches
 - **Additional features** - Buzzer and LED mode controls
-- **Energy Dashboard** - Full support for Home Assistant Energy panel
 
 ## Supported Models
 
@@ -20,7 +19,7 @@ Home Assistant integration for 2E Power Stations via Tuya IoT Cloud.
 ### Prerequisites
 
 1. Create account at [Tuya IoT Platform](https://iot.tuya.com)
-2. Create Cloud Project and subscribe to required APIs
+2. Create Cloud Project and subscribe to all APIs
 3. Link your device via "Link App Account" using Smart Life credentials
 
 ### Setup
@@ -36,12 +35,7 @@ Home Assistant integration for 2E Power Stations via Tuya IoT Cloud.
 ## Available Entities
 
 **Sensors:** Battery, Input Power, Output Power, AC/DC/USB Power, Temperature, AC Frequency, Error Code, Input Type
-
 **Switches:** AC Output, DC Output, USB Output, Buzzer, LED Mode
-
-## Troubleshooting
-
-**Permission denied (1106)**: Ensure device is linked via "Link App Account" in Tuya IoT Platform.
 
 ## License
 
