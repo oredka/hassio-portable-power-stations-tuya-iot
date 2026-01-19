@@ -72,6 +72,8 @@ async def async_setup_entry(
         entities.append(PowerStationErrorSensor(coordinator, entry))
     if "input_type" in coordinator.data:
         entities.append(PowerStationInputTypeSensor(coordinator, entry))
+    if "led_mode" in coordinator.data:
+        entities.append(PowerStationLEDModeSensor(coordinator, entry))
 
     async_add_entities(entities)
 
@@ -318,3 +320,21 @@ class PowerStationInputTypeSensor(PowerStationSensorBase):
         """Поточне значення датчика."""
         input_type = self.coordinator.data.get("input_type", "unknown")
         return str(input_type)
+
+
+class PowerStationLEDModeSensor(PowerStationSensorBase):
+    """Датчик режиму LED підсвітки."""
+
+    _attr_name = "LED Mode"
+    _attr_icon = "mdi:lightbulb-outline"
+
+    @property
+    def unique_id(self) -> str:
+        """Унікальний ID датчика."""
+        return f"{self._entry.entry_id}_led_mode"
+
+    @property
+    def native_value(self) -> str | None:
+        """Поточне значення датчика."""
+        led_mode = self.coordinator.data.get("led_mode", "unknown")
+        return str(led_mode)

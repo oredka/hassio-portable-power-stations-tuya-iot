@@ -34,8 +34,6 @@ async def async_setup_entry(
     # Feature switches
     if "switch_buzzer" in coordinator.data:
         entities.append(PowerStationBuzzerSwitch(coordinator, entry))
-    if "led_mode" in coordinator.data:
-        entities.append(PowerStationLEDSwitch(coordinator, entry))
 
     if entities:
         async_add_entities(entities)
@@ -136,18 +134,3 @@ class PowerStationBuzzerSwitch(PowerStationSwitchBase):
     def unique_id(self) -> str:
         """Унікальний ID перемикача."""
         return f"{self._entry.entry_id}_buzzer"
-
-
-class PowerStationLEDSwitch(PowerStationSwitchBase):
-    """Перемикач LED підсвітки."""
-
-    def __init__(self, coordinator, entry: ConfigEntry) -> None:
-        """Ініціалізація перемикача."""
-        super().__init__(coordinator, entry, "led_mode")
-        self._attr_name = "LED Mode"
-        self._attr_icon = "mdi:lightbulb-outline"
-
-    @property
-    def unique_id(self) -> str:
-        """Унікальний ID перемикача."""
-        return f"{self._entry.entry_id}_led_mode"
