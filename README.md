@@ -14,7 +14,7 @@ Home Assistant integration for Portable Power Stations via Tuya IoT Cloud.
 ## Supported Devices
 
 Currently tested and working with:
-- **2E SYAYVO-BP2400_D** - 2400Wh portable power station
+- **2E SYAYVO** - 2400Wh portable power station
 
 The integration uses Tuya Standard Instruction Set and should work with other Tuya-based portable power stations that support the same data points.
 
