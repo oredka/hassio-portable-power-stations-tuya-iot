@@ -82,7 +82,7 @@ class PowerStationACOutputSwitch(PowerStationSwitchBase):
     def __init__(self, coordinator, entry: ConfigEntry) -> None:
         """Ініціалізація перемикача."""
         super().__init__(coordinator, entry, "switch_ac")
-        self._attr_name = "AC Output"
+        self._attr_name = "AC Enabled"
         self._attr_icon = "mdi:power-socket-eu"
 
     @property
@@ -97,7 +97,7 @@ class PowerStationDCOutputSwitch(PowerStationSwitchBase):
     def __init__(self, coordinator, entry: ConfigEntry) -> None:
         """Ініціалізація перемикача."""
         super().__init__(coordinator, entry, "switch_dc")
-        self._attr_name = "DC Output"
+        self._attr_name = "DC (12V) Enabled"
         self._attr_icon = "mdi:power-plug-outline"
 
     @property
@@ -112,7 +112,7 @@ class PowerStationUSBOutputSwitch(PowerStationSwitchBase):
     def __init__(self, coordinator, entry: ConfigEntry) -> None:
         """Ініціалізація перемикача."""
         super().__init__(coordinator, entry, "switch_usb")
-        self._attr_name = "USB Output"
+        self._attr_name = "USB Enabled"
         self._attr_icon = "mdi:usb-port"
 
     @property
@@ -127,7 +127,7 @@ class PowerStationBuzzerSwitch(PowerStationSwitchBase):
     def __init__(self, coordinator, entry: ConfigEntry) -> None:
         """Ініціалізація перемикача."""
         super().__init__(coordinator, entry, "switch_buzzer")
-        self._attr_name = "Buzzer"
+        self._attr_name = "Beeper"
         self._attr_icon = "mdi:volume-high"
 
     @property

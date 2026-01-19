@@ -94,7 +94,7 @@ class PowerStationSensorBase(CoordinatorEntity, SensorEntity):
 class PowerStationBatterySensor(PowerStationSensorBase):
     """Датчик рівня батареї."""
 
-    _attr_name = "Battery Level"
+    _attr_name = "Main Battery Level"
     _attr_native_unit_of_measurement = PERCENTAGE
     _attr_device_class = SensorDeviceClass.BATTERY
     _attr_state_class = SensorStateClass.MEASUREMENT
@@ -113,7 +113,7 @@ class PowerStationBatterySensor(PowerStationSensorBase):
 class PowerStationInputPowerSensor(PowerStationSensorBase):
     """Датчик вхідної потужності."""
 
-    _attr_name = "Input Power"
+    _attr_name = "Total In Power"
     _attr_native_unit_of_measurement = UnitOfPower.WATT
     _attr_device_class = SensorDeviceClass.POWER
     _attr_state_class = SensorStateClass.MEASUREMENT
@@ -134,7 +134,7 @@ class PowerStationInputPowerSensor(PowerStationSensorBase):
 class PowerStationOutputPowerSensor(PowerStationSensorBase):
     """Датчик вихідної потужності."""
 
-    _attr_name = "Output Power"
+    _attr_name = "Total Out Power"
     _attr_native_unit_of_measurement = UnitOfPower.WATT
     _attr_device_class = SensorDeviceClass.POWER
     _attr_state_class = SensorStateClass.MEASUREMENT
@@ -155,7 +155,7 @@ class PowerStationOutputPowerSensor(PowerStationSensorBase):
 class PowerStationACPowerSensor(PowerStationSensorBase):
     """Датчик потужності AC виходу."""
 
-    _attr_name = "AC Output Power"
+    _attr_name = "AC Out Power"
     _attr_native_unit_of_measurement = UnitOfPower.WATT
     _attr_device_class = SensorDeviceClass.POWER
     _attr_state_class = SensorStateClass.MEASUREMENT
@@ -176,7 +176,7 @@ class PowerStationACPowerSensor(PowerStationSensorBase):
 class PowerStationDCPowerSensor(PowerStationSensorBase):
     """Датчик потужності DC виходу."""
 
-    _attr_name = "DC Output Power"
+    _attr_name = "DC Out Power"
     _attr_native_unit_of_measurement = UnitOfPower.WATT
     _attr_device_class = SensorDeviceClass.POWER
     _attr_state_class = SensorStateClass.MEASUREMENT
@@ -201,7 +201,7 @@ class PowerStationUSBPowerSensor(PowerStationSensorBase):
         """Ініціалізація датчика."""
         super().__init__(coordinator, entry)
         self._port_num = port_num
-        self._attr_name = f"USB{port_num} Output Power"
+        self._attr_name = f"USB{port_num} Out Power"
         self._attr_icon = "mdi:usb-port"
 
     _attr_native_unit_of_measurement = UnitOfPower.WATT
@@ -227,7 +227,7 @@ class PowerStationUSBCPowerSensor(PowerStationSensorBase):
         """Ініціалізація датчика."""
         super().__init__(coordinator, entry)
         self._port_num = port_num
-        self._attr_name = f"USB-C{port_num} Output Power"
+        self._attr_name = f"USB-C{port_num} Out Power"
         self._attr_icon = "mdi:usb-port"
 
     _attr_native_unit_of_measurement = UnitOfPower.WATT
@@ -249,7 +249,7 @@ class PowerStationUSBCPowerSensor(PowerStationSensorBase):
 class PowerStationTemperatureSensor(PowerStationSensorBase):
     """Датчик температури."""
 
-    _attr_name = "Temperature"
+    _attr_name = "Battery Temperature"
     _attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
     _attr_device_class = SensorDeviceClass.TEMPERATURE
     _attr_state_class = SensorStateClass.MEASUREMENT
