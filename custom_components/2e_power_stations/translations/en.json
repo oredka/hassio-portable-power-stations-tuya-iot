@@ -1,0 +1,41 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Setup 2E Power Station",
+        "description": "Enter your Tuya IoT Cloud credentials. Get them at https://iot.tuya.com",
+        "data": {
+          "access_id": "Tuya Access ID",
+          "access_secret": "Tuya Access Secret",
+          "device_id": "Device ID",
+          "endpoint": "Region"
+        },
+        "data_description": {
+          "access_id": "Access ID from Tuya IoT Platform",
+          "access_secret": "Access Secret from Tuya IoT Platform",
+          "device_id": "Your device ID in Tuya",
+          "endpoint": "Select Tuya Cloud region"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to connect to Tuya Cloud. Check your credentials and internet connection."
+    },
+    "abort": {
+      "already_configured": "This device is already configured"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "2E Power Station Options",
+        "data": {
+          "scan_interval": "Update interval (seconds)"
+        },
+        "data_description": {
+          "scan_interval": "How often to update data from device (10-300 seconds)"
+        }
+      }
+    }
+  }
+}

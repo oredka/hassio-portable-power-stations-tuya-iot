@@ -1,0 +1,41 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Налаштування 2E Power Station",
+        "description": "Введіть ваші Tuya IoT Cloud credentials. Отримайте їх на https://iot.tuya.com",
+        "data": {
+          "access_id": "Tuya Access ID",
+          "access_secret": "Tuya Access Secret",
+          "device_id": "Device ID",
+          "endpoint": "Регіон"
+        },
+        "data_description": {
+          "access_id": "Access ID з Tuya IoT Platform",
+          "access_secret": "Access Secret з Tuya IoT Platform",
+          "device_id": "ID вашого пристрою в Tuya",
+          "endpoint": "Виберіть регіон Tuya Cloud"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Не вдалося підключитися до Tuya Cloud. Перевірте credentials та з'єднання з інтернетом."
+    },
+    "abort": {
+      "already_configured": "Цей пристрій вже налаштований"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Налаштування 2E Power Station",
+        "data": {
+          "scan_interval": "Інтервал оновлення (секунди)"
+        },
+        "data_description": {
+          "scan_interval": "Як часто оновлювати дані з пристрою (10-300 секунд)"
+        }
+      }
+    }
+  }
+}
