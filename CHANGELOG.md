@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.0.2] - 2026-01-19
+
+### Added
+- Official Tuya icon from Home Assistant brands repository
+
+## [2.0.1] - 2026-01-19
+
+### Fixed
+- HACS download issue with correct folder name configuration
+
 ## [2.0.0] - 2026-01-19
 
 ### Breaking Changes
