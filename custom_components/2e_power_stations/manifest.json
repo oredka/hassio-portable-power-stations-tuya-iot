@@ -1,11 +1,11 @@
 {
   "domain": "2e_power_stations",
-  "name": "2E Power Stations",
+  "name": "Portable Power Stations (Tuya IoT)",
   "codeowners": ["@oredka"],
   "config_flow": true,
   "documentation": "https://github.com/oredka/2e-power-stations",
   "issue_tracker": "https://github.com/oredka/2e-power-stations/issues",
   "requirements": ["tuya-connector-python"],
-  "version": "1.4.2",
+  "version": "1.5.0",
   "iot_class": "cloud_polling"
 }

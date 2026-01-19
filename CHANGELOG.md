@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.5.0] - 2026-01-19
+
+### Changed
+- **Renamed integration** to "Portable Power Stations (Tuya IoT)" to better reflect universal Tuya compatibility
+- Integration now uses generic name while maintaining full support for 2E SYAYVO-BP2400_D and other Tuya-based power stations
+
+### Removed
+- Removed local icon files (icon.png, icon@2x.png, logo.png) - icons require Home Assistant Brands repository submission
+- Removed icon troubleshooting from documentation
+
+### Updated
+- Enhanced README with complete entity list and updated device compatibility information
+- Updated documentation to reflect generic Tuya IoT integration approach
+
 ## [1.4.2] - 2026-01-19
 
 ### Fixed
