@@ -65,11 +65,26 @@ class TwoEPowerStationAPI:
         Returns:
             Словник з інформацією про пристрій
         """
+        _LOGGER.debug("Requesting device info for device_id: %s", self.device_id)
         response = self.api.get(f"/v1.0/devices/{self.device_id}")
+        _LOGGER.debug("Device info response: %s", response)
+
         if response.get("success"):
             return response.get("result", {})
         else:
-            _LOGGER.error("Помилка отримання інформації про пристрій: %s", response)
+            error_code = response.get("code")
+            error_msg = response.get("msg", "Unknown error")
+
+            if error_code == 1010:
+                _LOGGER.error(
+                    "Token invalid error. Please check:\n"
+                    "1. Cloud Project has 'IoT Core' or 'Smart Home' API enabled\n"
+                    "2. Device is linked to your Cloud Project\n"
+                    "3. Access ID and Secret are correct\n"
+                    "Full response: %s", response
+                )
+            else:
+                _LOGGER.error("Помилка отримання інформації про пристрій: %s", response)
             return {}
 
     def send_command(self, code: str, value: Any) -> bool:
