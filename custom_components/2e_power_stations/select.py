@@ -23,6 +23,64 @@ LED_MODE_OPTIONS = {
     "lamp_sos": "SOS",
 }
 
+# Timer options for AC/DC/LED auto-off
+AC_OFF_TIME_OPTIONS = {
+    "never": "Never",
+    "1hour": "1 Hour",
+    "2hour": "2 Hours",
+    "3hour": "3 Hours",
+    "4hour": "4 Hours",
+    "5hour": "5 Hours",
+    "6hour": "6 Hours",
+    "7hour": "7 Hours",
+    "8hour": "8 Hours",
+    "9hour": "9 Hours",
+    "10hour": "10 Hours",
+    "11hour": "11 Hours",
+    "12hour": "12 Hours",
+}
+
+DC_OFF_TIME_OPTIONS = {
+    "never": "Never",
+    "1hour": "1 Hour",
+    "2hour": "2 Hours",
+    "3hour": "3 Hours",
+    "4hour": "4 Hours",
+    "5hour": "5 Hours",
+    "6hour": "6 Hours",
+}
+
+LED_OFF_TIME_OPTIONS = {
+    "never": "Never",
+    "10sec": "10 Seconds",
+    "30sec": "30 Seconds",
+    "1min": "1 Minute",
+    "2min": "2 Minutes",
+    "5min": "5 Minutes",
+    "1hour": "1 Hour",
+    "2hour": "2 Hours",
+}
+
+STANDBY_TIME_OPTIONS = {
+    "never": "Never",
+    "30sec": "30 Seconds",
+    "1min": "1 Minute",
+    "2min": "2 Minutes",
+    "3min": "3 Minutes",
+    "5min": "5 Minutes",
+    "10min": "10 Minutes",
+    "30min": "30 Minutes",
+}
+
+DISPLAY_OFF_TIME_OPTIONS = {
+    "never": "Never",
+    "10sec": "10 Seconds",
+    "30sec": "30 Seconds",
+    "1min": "1 Minute",
+    "2min": "2 Minutes",
+    "5min": "5 Minutes",
+}
+
 
 async def async_setup_entry(
     hass: HomeAssistant,
@@ -36,6 +94,16 @@ async def async_setup_entry(
 
     if "led_mode" in coordinator.data:
         entities.append(PowerStationLEDModeSelect(coordinator, entry))
+    if "ac_off_time_set" in coordinator.data:
+        entities.append(PowerStationACOffTimeSelect(coordinator, entry))
+    if "dc_off_time_set" in coordinator.data:
+        entities.append(PowerStationDCOffTimeSelect(coordinator, entry))
+    if "led_off_time_set" in coordinator.data:
+        entities.append(PowerStationLEDOffTimeSelect(coordinator, entry))
+    if "device_standby_time_set" in coordinator.data:
+        entities.append(PowerStationStandbyTimeSelect(coordinator, entry))
+    if "display_off_time_set" in coordinator.data:
+        entities.append(PowerStationDisplayOffTimeSelect(coordinator, entry))
 
     if entities:
         async_add_entities(entities)
@@ -65,8 +133,9 @@ class PowerStationLEDModeSelect(PowerStationSelectBase):
     def __init__(self, coordinator, entry: ConfigEntry) -> None:
         """Initialize LED mode select."""
         super().__init__(coordinator, entry)
-        # Set available options from the enum mapping
         self._attr_options = list(LED_MODE_OPTIONS.values())
+        self._dp_code = "led_mode"
+        self._options_map = LED_MODE_OPTIONS
 
     @property
     def unique_id(self) -> str:
@@ -76,22 +145,226 @@ class PowerStationLEDModeSelect(PowerStationSelectBase):
     @property
     def current_option(self) -> str | None:
         """Return current selected option."""
-        current_value = self.coordinator.data.get("led_mode")
-        if current_value in LED_MODE_OPTIONS:
-            return LED_MODE_OPTIONS[current_value]
+        current_value = self.coordinator.data.get(self._dp_code)
+        if current_value in self._options_map:
+            return self._options_map[current_value]
         return None
 
     async def async_select_option(self, option: str) -> None:
         """Change the selected option."""
-        # Find the key for the selected value
         tuya_value = None
-        for key, value in LED_MODE_OPTIONS.items():
+        for key, value in self._options_map.items():
             if value == option:
                 tuya_value = key
                 break
 
         if tuya_value:
             await self.hass.async_add_executor_job(
-                self.coordinator.api.send_command, "led_mode", tuya_value
+                self.coordinator.api.send_command, self._dp_code, tuya_value
+            )
+            await self.coordinator.async_request_refresh()
+
+
+class PowerStationACOffTimeSelect(PowerStationSelectBase):
+    """AC Auto-Off Time selector."""
+
+    _attr_name = "AC Auto-Off Time"
+    _attr_icon = "mdi:timer-off-outline"
+
+    def __init__(self, coordinator, entry: ConfigEntry) -> None:
+        """Initialize selector."""
+        super().__init__(coordinator, entry)
+        self._attr_options = list(AC_OFF_TIME_OPTIONS.values())
+        self._dp_code = "ac_off_time_set"
+        self._options_map = AC_OFF_TIME_OPTIONS
+
+    @property
+    def unique_id(self) -> str:
+        """Return unique ID."""
+        return f"{self._entry.entry_id}_ac_off_time"
+
+    @property
+    def current_option(self) -> str | None:
+        """Return current selected option."""
+        current_value = self.coordinator.data.get(self._dp_code)
+        if current_value in self._options_map:
+            return self._options_map[current_value]
+        return None
+
+    async def async_select_option(self, option: str) -> None:
+        """Change the selected option."""
+        tuya_value = None
+        for key, value in self._options_map.items():
+            if value == option:
+                tuya_value = key
+                break
+
+        if tuya_value:
+            await self.hass.async_add_executor_job(
+                self.coordinator.api.send_command, self._dp_code, tuya_value
+            )
+            await self.coordinator.async_request_refresh()
+
+
+class PowerStationDCOffTimeSelect(PowerStationSelectBase):
+    """DC Auto-Off Time selector."""
+
+    _attr_name = "DC Auto-Off Time"
+    _attr_icon = "mdi:timer-off-outline"
+
+    def __init__(self, coordinator, entry: ConfigEntry) -> None:
+        """Initialize selector."""
+        super().__init__(coordinator, entry)
+        self._attr_options = list(DC_OFF_TIME_OPTIONS.values())
+        self._dp_code = "dc_off_time_set"
+        self._options_map = DC_OFF_TIME_OPTIONS
+
+    @property
+    def unique_id(self) -> str:
+        """Return unique ID."""
+        return f"{self._entry.entry_id}_dc_off_time"
+
+    @property
+    def current_option(self) -> str | None:
+        """Return current selected option."""
+        current_value = self.coordinator.data.get(self._dp_code)
+        if current_value in self._options_map:
+            return self._options_map[current_value]
+        return None
+
+    async def async_select_option(self, option: str) -> None:
+        """Change the selected option."""
+        tuya_value = None
+        for key, value in self._options_map.items():
+            if value == option:
+                tuya_value = key
+                break
+
+        if tuya_value:
+            await self.hass.async_add_executor_job(
+                self.coordinator.api.send_command, self._dp_code, tuya_value
+            )
+            await self.coordinator.async_request_refresh()
+
+
+class PowerStationLEDOffTimeSelect(PowerStationSelectBase):
+    """LED Auto-Off Time selector."""
+
+    _attr_name = "LED Auto-Off Time"
+    _attr_icon = "mdi:timer-off-outline"
+
+    def __init__(self, coordinator, entry: ConfigEntry) -> None:
+        """Initialize selector."""
+        super().__init__(coordinator, entry)
+        self._attr_options = list(LED_OFF_TIME_OPTIONS.values())
+        self._dp_code = "led_off_time_set"
+        self._options_map = LED_OFF_TIME_OPTIONS
+
+    @property
+    def unique_id(self) -> str:
+        """Return unique ID."""
+        return f"{self._entry.entry_id}_led_off_time"
+
+    @property
+    def current_option(self) -> str | None:
+        """Return current selected option."""
+        current_value = self.coordinator.data.get(self._dp_code)
+        if current_value in self._options_map:
+            return self._options_map[current_value]
+        return None
+
+    async def async_select_option(self, option: str) -> None:
+        """Change the selected option."""
+        tuya_value = None
+        for key, value in self._options_map.items():
+            if value == option:
+                tuya_value = key
+                break
+
+        if tuya_value:
+            await self.hass.async_add_executor_job(
+                self.coordinator.api.send_command, self._dp_code, tuya_value
+            )
+            await self.coordinator.async_request_refresh()
+
+
+class PowerStationStandbyTimeSelect(PowerStationSelectBase):
+    """Device Standby Time selector."""
+
+    _attr_name = "Standby Time"
+    _attr_icon = "mdi:timer-outline"
+
+    def __init__(self, coordinator, entry: ConfigEntry) -> None:
+        """Initialize selector."""
+        super().__init__(coordinator, entry)
+        self._attr_options = list(STANDBY_TIME_OPTIONS.values())
+        self._dp_code = "device_standby_time_set"
+        self._options_map = STANDBY_TIME_OPTIONS
+
+    @property
+    def unique_id(self) -> str:
+        """Return unique ID."""
+        return f"{self._entry.entry_id}_standby_time"
+
+    @property
+    def current_option(self) -> str | None:
+        """Return current selected option."""
+        current_value = self.coordinator.data.get(self._dp_code)
+        if current_value in self._options_map:
+            return self._options_map[current_value]
+        return None
+
+    async def async_select_option(self, option: str) -> None:
+        """Change the selected option."""
+        tuya_value = None
+        for key, value in self._options_map.items():
+            if value == option:
+                tuya_value = key
+                break
+
+        if tuya_value:
+            await self.hass.async_add_executor_job(
+                self.coordinator.api.send_command, self._dp_code, tuya_value
+            )
+            await self.coordinator.async_request_refresh()
+
+
+class PowerStationDisplayOffTimeSelect(PowerStationSelectBase):
+    """Display Auto-Off Time selector."""
+
+    _attr_name = "Display Auto-Off Time"
+    _attr_icon = "mdi:monitor-off"
+
+    def __init__(self, coordinator, entry: ConfigEntry) -> None:
+        """Initialize selector."""
+        super().__init__(coordinator, entry)
+        self._attr_options = list(DISPLAY_OFF_TIME_OPTIONS.values())
+        self._dp_code = "display_off_time_set"
+        self._options_map = DISPLAY_OFF_TIME_OPTIONS
+
+    @property
+    def unique_id(self) -> str:
+        """Return unique ID."""
+        return f"{self._entry.entry_id}_display_off_time"
+
+    @property
+    def current_option(self) -> str | None:
+        """Return current selected option."""
+        current_value = self.coordinator.data.get(self._dp_code)
+        if current_value in self._options_map:
+            return self._options_map[current_value]
+        return None
+
+    async def async_select_option(self, option: str) -> None:
+        """Change the selected option."""
+        tuya_value = None
+        for key, value in self._options_map.items():
+            if value == option:
+                tuya_value = key
+                break
+
+        if tuya_value:
+            await self.hass.async_add_executor_job(
+                self.coordinator.api.send_command, self._dp_code, tuya_value
             )
             await self.coordinator.async_request_refresh()
