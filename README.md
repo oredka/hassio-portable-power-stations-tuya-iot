@@ -10,6 +10,7 @@ Home Assistant integration for 2E Power Stations via Tuya IoT Cloud.
 - **Output controls** - AC/DC/USB output switches
 - **Additional features** - Buzzer and LED mode controls
 
+
 ## Supported Models
 
 - 2E SYAYVO
