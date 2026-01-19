@@ -2,7 +2,7 @@
   "config": {
     "step": {
       "user": {
-        "title": "Налаштування 2E Power Station",
+        "title": "Налаштування Tuya IoT Power Station (2E Syayvo)",
         "description": "Введіть ваші Tuya IoT Cloud credentials. Отримайте їх на https://iot.tuya.com",
         "data": {
           "access_id": "Tuya Access ID",
@@ -28,7 +28,7 @@
   "options": {
     "step": {
       "init": {
-        "title": "Налаштування 2E Power Station",
+        "title": "Налаштування Tuya IoT Power Station (2E Syayvo)",
         "data": {
           "scan_interval": "Інтервал оновлення (секунди)"
         },

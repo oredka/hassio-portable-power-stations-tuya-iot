@@ -1,4 +1,4 @@
-"""Перемикачі для 2E Power Stations через Tuya IoT."""
+"""Перемикачі для Tuya IoT Power Stations (2E Syayvo)."""
 import logging
 from typing import Any
 
@@ -40,7 +40,7 @@ async def async_setup_entry(
 
 
 class PowerStationSwitchBase(CoordinatorEntity, SwitchEntity):
-    """Базовий клас для перемикачів 2E Power Station."""
+    """Базовий клас для перемикачів Tuya IoT Power Station."""
 
     def __init__(self, coordinator, entry: ConfigEntry, switch_code: str) -> None:
         """Ініціалізація перемикача."""
@@ -49,7 +49,7 @@ class PowerStationSwitchBase(CoordinatorEntity, SwitchEntity):
         self._switch_code = switch_code
         self._attr_device_info = {
             "identifiers": {(DOMAIN, entry.entry_id)},
-            "name": "2E Power Station",
+            "name": "2E Syayvo",
             "manufacturer": "2E",
             "model": "Power Station",
         }

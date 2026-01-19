@@ -1,4 +1,4 @@
-"""Інтеграція 2E Power Stations для Home Assistant через Tuya IoT."""
+"""Інтеграція Tuya IoT Power Stations для Home Assistant (2E Syayvo)."""
 import logging
 
 from homeassistant.config_entries import ConfigEntry
@@ -13,12 +13,12 @@ _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup(hass: HomeAssistant, config: dict) -> bool:
-    """Set up the 2E Power Stations component."""
+    """Set up the Tuya IoT Power Stations component."""
     return True
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Налаштування 2E Power Stations з config entry."""
+    """Налаштування Tuya IoT Power Stations з config entry."""
     _LOGGER.info("Налаштування інтеграції %s", DOMAIN)
 
     # Створюємо API клієнт з Tuya credentials

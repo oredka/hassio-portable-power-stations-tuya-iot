@@ -1,4 +1,4 @@
-"""DataUpdateCoordinator для 2E Power Stations через Tuya IoT."""
+"""DataUpdateCoordinator для Tuya IoT Power Stations (2E Syayvo)."""
 import logging
 from datetime import timedelta
 from typing import Any
@@ -13,7 +13,7 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class TwoEPowerStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
-    """Координатор для оновлення даних з 2E Power Station через Tuya."""
+    """Координатор для оновлення даних з Tuya IoT Power Station."""
 
     def __init__(
         self,

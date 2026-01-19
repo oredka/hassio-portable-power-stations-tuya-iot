@@ -1,6 +1,6 @@
-"""Константи для інтеграції 2E Power Stations."""
+"""Константи для інтеграції Tuya IoT Power Stations."""
 
-DOMAIN = "2e_power_stations"
+DOMAIN = "tuya_iot_power_stations"
 
 # Інтервал оновлення даних (секунди)
 UPDATE_INTERVAL = 30

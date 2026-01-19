@@ -1,5 +1,24 @@
 # Changelog
 
+## [2.0.0] - 2026-01-19
+
+### Breaking Changes
+- **Renamed integration** from "2e_power_stations" to "tuya_iot_power_stations"
+- **Integration folder renamed** - Users will need to reinstall the integration
+- **Domain changed** - Previous configurations will not carry over automatically
+
+### Changed
+- Integration now explicitly focused on **2E Syayvo** power station as the only supported device
+- Updated all branding from "Portable Power Stations (Tuya IoT)" to "Tuya IoT Power Stations (2E Syayvo)"
+- Device name changed from "2E Power Station" to "2E Syayvo" in all entities
+- Updated repository URLs to reflect new naming: github.com/oredka/tuya-iot-power-stations
+- Cleaned up all code docstrings and comments to reflect new naming
+
+### Documentation
+- Updated README with clearer focus on 2E Syayvo as the only supported device
+- Simplified installation instructions
+- Updated HACS configuration with all supported domains
+
 ## [1.5.0] - 2026-01-19
 
 ### Changed

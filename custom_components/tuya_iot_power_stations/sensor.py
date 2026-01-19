@@ -1,4 +1,4 @@
-"""Датчики для 2E Power Stations через Tuya IoT."""
+"""Датчики для Tuya IoT Power Stations (2E Syayvo)."""
 import logging
 from typing import Any
 
@@ -82,7 +82,7 @@ async def async_setup_entry(
 
 
 class PowerStationSensorBase(CoordinatorEntity, SensorEntity):
-    """Базовий клас для датчиків 2E Power Station."""
+    """Базовий клас для датчиків Tuya IoT Power Station."""
 
     def __init__(self, coordinator, entry: ConfigEntry) -> None:
         """Ініціалізація датчика."""
@@ -90,7 +90,7 @@ class PowerStationSensorBase(CoordinatorEntity, SensorEntity):
         self._entry = entry
         self._attr_device_info = {
             "identifiers": {(DOMAIN, entry.entry_id)},
-            "name": "2E Power Station",
+            "name": "2E Syayvo",
             "manufacturer": "2E",
             "model": "Power Station",
         }

@@ -1,4 +1,4 @@
-"""Config flow для інтеграції 2E Power Stations через Tuya IoT."""
+"""Config flow для інтеграції Tuya IoT Power Stations (2E Syayvo)."""
 import logging
 from typing import Any
 
@@ -61,14 +61,14 @@ def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str, Any]:
     device_info = api.get_device_info()
 
     return {
-        "title": device_info.get("name", f"2E Power Station ({data['device_id'][:8]})"),
+        "title": device_info.get("name", f"2E Syayvo ({data['device_id'][:8]})"),
         "device_info": device_info,
         "endpoint": endpoint_url,
     }
 
 
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
-    """Config flow для 2E Power Stations."""
+    """Config flow для Tuya IoT Power Stations."""
 
     VERSION = 1
 

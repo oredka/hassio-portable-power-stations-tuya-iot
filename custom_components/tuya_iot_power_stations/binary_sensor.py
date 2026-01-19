@@ -1,4 +1,4 @@
-"""Binary sensors for 2E Power Stations via Tuya IoT."""
+"""Binary sensors for Tuya IoT Power Stations (2E Syayvo)."""
 import logging
 
 from homeassistant.components.binary_sensor import (
@@ -33,7 +33,7 @@ async def async_setup_entry(
 
 
 class PowerStationBinarySensorBase(CoordinatorEntity, BinarySensorEntity):
-    """Base class for 2E Power Station binary sensors."""
+    """Base class for Tuya IoT Power Station binary sensors."""
 
     def __init__(self, coordinator, entry: ConfigEntry) -> None:
         """Initialize binary sensor."""
@@ -41,7 +41,7 @@ class PowerStationBinarySensorBase(CoordinatorEntity, BinarySensorEntity):
         self._entry = entry
         self._attr_device_info = {
             "identifiers": {(DOMAIN, entry.entry_id)},
-            "name": "2E Power Station",
+            "name": "2E Syayvo",
             "manufacturer": "2E",
             "model": "Power Station",
         }
