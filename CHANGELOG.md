@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.2] - 2026-01-19
+
+### Fixed
+- Updated LED Mode options to match Tuya Standard Instruction Set specification
+- Added missing "Low" (lamp_30) brightness level
+- Corrected option order: Off, High Light, Strobe, Half Bright, Low, SOS
+
 ## [1.4.1] - 2026-01-19
 
 ### Fixed
