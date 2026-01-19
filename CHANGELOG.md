@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.4] - 2026-01-19
+
+### Fixed
+- Changed USB Output from switch to binary sensor - USB ports cannot be controlled, only monitored for status
+
+### Changed
+- USB Output now appears as binary sensor showing active/inactive status instead of non-functional switch
+
 ## [1.0.3] - 2026-01-19
 
 ### Fixed
