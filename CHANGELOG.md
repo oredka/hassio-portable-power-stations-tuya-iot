@@ -1,71 +1,23 @@
 # Changelog
 
+## [0.3.7] - 2026-01-19
+
+### Fixed
+- Fixed permission denied error (code 1106) handling with detailed instructions
+- Improved error messages for device authorization issues
+- Added helper script to list all available devices
+
+### Added
+- Added list_devices.py utility script
+- Enhanced API error handling with specific error codes
+
 ## [0.3.6] - 2026-01-19
 
 ### Added
-- Added GitHub Actions workflow for automatic releases
-- Created create_github_release.py script
-
-## [0.3.5] - 2026-01-19
-
-### Added
-- Added GitLab CI/CD configuration for automatic releases
-
-## [0.3.4] - 2026-01-19
-
-### Added
-- Created automatic GitLab Release Creator
+- GitHub Actions workflow for automatic releases
+- create_github_release.py script for release automation
 
 ## [0.3.3] - 2026-01-19
 
 ### Fixed
 - Fixed "token invalid" error - added connect() call for Tuya Cloud API authentication
-
-## [1.0.5] - 2025-01-19
-
-### Виправлено
-- Виправлено помилку "Invalid handler specified" через неправильний синтаксис ConfigFlow класу
-- Змінено domain=DOMAIN як параметр на DOMAIN як атрибут класу в config_flow.py
-- Видалено посилання на іконки з manifest.json (Home Assistant автоматично підхоплює локальні іконки)
-
-### Покращено
-- Значно розширено та покращено README.md з детальними інструкціями
-- Додано розділи з усунення проблем та налаштуваннями
-- Додано список всіх доступних датчиків та перемикачів
-- Покращено структуру документації
-
-## [1.0.4] - 2025-01-19
-
-### Виправлено
-- Виправлено помилку "invalid handler specified" при додаванні інтеграції
-- Додано обов'язкову функцію async_setup в __init__.py
-
-## [1.0.3] - 2025-01-19
-
-### Додано
-- Додано іконку та логотип для відображення в HACS та Home Assistant
-
-## [1.0.2] - 2025-01-19
-
-### Виправлено
-- Виправлено написання бренду: "2e" → "2E" у всіх файлах
-- Оновлено docstrings та коментарі
-- Консистентне використання "2E" у коді
-
-## [1.0.0] - 2025-01-19
-
-### Додано
-- Повна інтеграція з Tuya IoT Cloud
-- Датчики: рівень батареї, потужність, напруга, струм
-- Перемикачі: основний, AC, DC виходи
-- Підтримка 2E Syayvo 2400W
-- Автоматичне оновлення даних (кожні 30 сек)
-- Налаштування інтервалу оновлення через UI
-- Підтримка HACS
-- Українська та англійська локалізація
-- Логотип 2E та іконка інтеграції
-
-### Технічні деталі
-- Використовує tuya-iot-py-sdk 0.6.6
-- Підтримка регіонів: Європа, США, Китай, Індія
-- Config flow для легкого налаштування
