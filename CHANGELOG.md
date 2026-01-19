@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.3.0] - 2026-01-19
+
+### Fixed
+- Removed unsupported "Breathing" mode from LED Mode options (causes Tuya API error)
+- LED Mode now works correctly with all supported modes (Off, 10%, 30%, 50%, 100%, SOS)
+
+### Changed
+- Cleaned up debug logging after diagnosing LED Mode issue
+- Updated TROUBLESHOOTING.md with LED Mode information
+
 ## [1.2.2] - 2026-01-19
 
 ### Added

@@ -13,13 +13,13 @@ from .const import DOMAIN
 _LOGGER = logging.getLogger(__name__)
 
 # LED mode options based on Tuya DP enum values
+# Note: "lamp_breath" (Breathing) is not supported by 2E SYAYVO-BP2400_D model
 LED_MODE_OPTIONS = {
     "lamp_off": "Off",
     "lamp_10": "10%",
     "lamp_30": "30%",
     "lamp_50": "50%",
     "lamp_100": "100%",
-    "lamp_breath": "Breathing",
     "lamp_sos": "SOS",
 }
 
@@ -146,11 +146,8 @@ class PowerStationLEDModeSelect(PowerStationSelectBase):
     def current_option(self) -> str | None:
         """Return current selected option."""
         current_value = self.coordinator.data.get(self._dp_code)
-        _LOGGER.debug("LED Mode current value: %s (type: %s)", current_value, type(current_value))
         if current_value in self._options_map:
             return self._options_map[current_value]
-        # Log available options if value not found
-        _LOGGER.warning("LED Mode value '%s' not in options map: %s", current_value, self._options_map)
         return None
 
     async def async_select_option(self, option: str) -> None:
@@ -162,7 +159,6 @@ class PowerStationLEDModeSelect(PowerStationSelectBase):
                 break
 
         if tuya_value:
-            _LOGGER.debug("Setting LED Mode to: %s (Tuya value: %s)", option, tuya_value)
             success = await self.hass.async_add_executor_job(
                 self.coordinator.api.send_command, self._dp_code, tuya_value
             )
