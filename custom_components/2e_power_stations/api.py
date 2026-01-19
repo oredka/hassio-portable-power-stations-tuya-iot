@@ -65,14 +65,18 @@ class TwoEPowerStationAPI:
             "sign_method": "HMAC-SHA256",
         }
 
-        _LOGGER.debug("Getting token with signature: string_to_sign=%s", string_to_sign)
+        _LOGGER.debug("Getting token - string_to_sign=%s, signature=%s", string_to_sign, signature[:16] + "...")
+        _LOGGER.debug("Headers: %s", {**headers, "sign": signature[:16] + "..."})
 
         url = f"{self.endpoint}/v1.0/token?grant_type=1"
         response = requests.get(url, headers=headers)
         result = response.json()
 
+        _LOGGER.debug("Token response: %s", result)
+
         if not result.get("success"):
             _LOGGER.error("Failed to get token: %s", result)
+            _LOGGER.error("Make sure Access ID and Access Secret are correct from Tuya IoT Platform")
             raise Exception(f"Failed to get token: {result}")
 
         self.token = result["result"]["access_token"]
