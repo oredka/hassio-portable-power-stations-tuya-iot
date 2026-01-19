@@ -1,65 +1,33 @@
 # Налаштування Energy Dashboard
 
-Для використання 2E Power Station в панелі енергії Home Assistant потрібно створити допоміжні сенсори для обчислення енергії.
+Інтеграція 2E Power Station надає сенсор Battery Power для використання в панелі енергії Home Assistant.
 
-## Крок 1: Створити Riemann Sum Integration сенсори
-
-Додайте до `configuration.yaml`:
-
-```yaml
-sensor:
-  # Енергія заряду батареї (з вхідної потужності)
-  - platform: integration
-    source: sensor.2e_power_station_total_in_power
-    name: "2E Battery Charge Energy"
-    unique_id: 2e_battery_charge_energy
-    unit_prefix: k
-    round: 2
-    method: left
-
-  # Енергія розряду батареї (з вихідної потужності)
-  - platform: integration
-    source: sensor.2e_power_station_total_out_power
-    name: "2E Battery Discharge Energy"
-    unique_id: 2e_battery_discharge_energy
-    unit_prefix: k
-    round: 2
-    method: left
-```
-
-## Крок 2: Перезапустити Home Assistant
-
-Після додавання конфігурації перезапустіть Home Assistant.
-
-## Крок 3: Налаштувати Energy Dashboard
+## Налаштування Energy Dashboard
 
 1. Відкрийте **Налаштування** → **Панелі керування** → **Енергія**
 2. Натисніть **Додати акумулятор**
-3. Заповніть поля:
-   - **Energy charged into the battery**: `sensor.2e_battery_charge_energy`
-   - **Energy discharged from the battery**: `sensor.2e_battery_discharge_energy`
-   - **Battery power** (опціонально): `sensor.2e_power_station_battery_power`
+3. У полі **Battery power** виберіть: `sensor.2e_power_station_battery_power`
+
+**Примітка**: Сенсор Battery Power показує потужність батареї в Ватах:
+- Позитивне значення = розряд батареї (споживання)
+- Негативне значення = заряд батареї (накопичення)
 
 ## Доступні сенсори
 
 ### Сенсори потужності (Power)
 - `sensor.2e_power_station_total_in_power` - Вхідна потужність (Вт)
 - `sensor.2e_power_station_total_out_power` - Вихідна потужність (Вт)
-- `sensor.2e_power_station_battery_power` - Потужність батареї (позитивне = розряд, негативне = заряд)
-- `sensor.2e_power_station_ac_out_power` - AC вихід
-- `sensor.2e_power_station_dc_out_power` - DC вихід
-- `sensor.2e_power_station_usb1_out_power` - USB порти
-
-### Сенсори енергії (Energy) - Після додавання конфігурації
-- `sensor.2e_battery_charge_energy` - Накопичена енергія заряду (kWh)
-- `sensor.2e_battery_discharge_energy` - Накопичена енергія розряду (kWh)
+- `sensor.2e_power_station_battery_power` - Потужність батареї (Вт)
+- `sensor.2e_power_station_ac_out_power` - AC вихід (Вт)
+- `sensor.2e_power_station_dc_out_power` - DC вихід (Вт)
+- `sensor.2e_power_station_usb1_out_power` - USB порти (Вт)
 
 ### Інші сенсори
 - `sensor.2e_power_station_main_battery_level` - Рівень батареї (%)
 - `sensor.2e_power_station_battery_temperature` - Температура батареї (°C)
 
-## Примітки
+## Обмеження
 
-- Сенсори енергії будуть накопичувати дані з моменту створення
-- При перезапуску Home Assistant значення можуть скинутися (залежить від recorder)
-- Для точного обліку енергії переконайтеся, що інтервал оновлення не занадто великий (за замовчуванням 30 секунд)
+Energy Dashboard в Home Assistant вимагає сенсори енергії (kWh) для точного обліку заряду/розряду батареї. На даний момент пристрої 2E Power Station через Tuya IoT не надають дані про накопичену енергію, тільки поточну потужність.
+
+Для повноцінного обліку енергії можна додатково створити допоміжні сенсори через інтеграцію **Riemann sum integral** в Home Assistant UI (Налаштування → Пристрої та служби → Додати інтеграцію → Riemann sum integral).
