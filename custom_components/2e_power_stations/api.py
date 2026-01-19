@@ -33,8 +33,8 @@ class TwoEPowerStationAPI:
         _LOGGER.debug("Initializing Tuya Connector API - Endpoint: %s", endpoint)
         # Використовуємо офіційний tuya-connector-python SDK
         self.api = TuyaOpenAPI(endpoint, access_id, access_secret)
-        self.api.connect()
-        _LOGGER.debug("Tuya API connected successfully")
+        # Не викликаємо connect() для Cloud Project з App Account
+        _LOGGER.debug("Tuya API initialized")
 
     async def close(self) -> None:
         """Закрити з'єднання."""
