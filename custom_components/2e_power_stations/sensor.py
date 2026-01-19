@@ -63,6 +63,11 @@ async def async_setup_entry(
     if "usb_c2_output_power" in coordinator.data:
         entities.append(PowerStationUSBCPowerSensor(coordinator, entry, 2))
 
+    # Battery power sensor (positive = discharge, negative = charge)
+    # Цей сенсор використовується для Energy Dashboard
+    if "total_input_power" in coordinator.data or "total_output_power" in coordinator.data:
+        entities.append(PowerStationBatteryPowerSensor(coordinator, entry))
+
     # Other sensors
     if "temp_current" in coordinator.data:
         entities.append(PowerStationTemperatureSensor(coordinator, entry))
@@ -318,3 +323,82 @@ class PowerStationInputTypeSensor(PowerStationSensorBase):
         """Поточне значення датчика."""
         input_type = self.coordinator.data.get("input_type", "unknown")
         return str(input_type)
+
+
+class PowerStationChargeEnergySensor(PowerStationSensorBase):
+    """Датчик енергії заряду батареї (для Energy Dashboard)."""
+
+    _attr_name = "Battery Charge Energy"
+    _attr_native_unit_of_measurement = UnitOfEnergy.KILO_WATT_HOUR
+    _attr_device_class = SensorDeviceClass.ENERGY
+    _attr_state_class = SensorStateClass.TOTAL_INCREASING
+    _attr_icon = "mdi:battery-charging"
+
+    @property
+    def unique_id(self) -> str:
+        """Унікальний ID датчика."""
+        return f"{self._entry.entry_id}_charge_energy"
+
+    @property
+    def native_value(self) -> float | None:
+        """Поточне значення датчика в kWh."""
+        energy = self.coordinator.data.get("charge_energy", 0)
+        # Конвертуємо Wh в kWh якщо потрібно
+        return float(energy) / 1000.0 if energy > 100 else float(energy)
+
+
+class PowerStationDischargeEnergySensor(PowerStationSensorBase):
+    """Датчик енергії розряду батареї (для Energy Dashboard)."""
+
+    _attr_name = "Battery Discharge Energy"
+    _attr_native_unit_of_measurement = UnitOfEnergy.KILO_WATT_HOUR
+    _attr_device_class = SensorDeviceClass.ENERGY
+    _attr_state_class = SensorStateClass.TOTAL_INCREASING
+    _attr_icon = "mdi:battery-minus"
+
+    @property
+    def unique_id(self) -> str:
+        """Унікальний ID датчика."""
+        return f"{self._entry.entry_id}_discharge_energy"
+
+    @property
+    def native_value(self) -> float | None:
+        """Поточне значення датчика в kWh."""
+        energy = self.coordinator.data.get("discharge_energy", 0)
+        # Конвертуємо Wh в kWh якщо потрібно
+        return float(energy) / 1000.0 if energy > 100 else float(energy)
+
+
+class PowerStationBatteryPowerSensor(PowerStationSensorBase):
+    """Датчик потужності батареї (для Energy Dashboard).
+
+    Позитивне значення = розряд батареї (output)
+    Негативне значення = заряд батареї (input)
+    """
+
+    _attr_name = "Battery Power"
+    _attr_native_unit_of_measurement = UnitOfPower.WATT
+    _attr_device_class = SensorDeviceClass.POWER
+    _attr_state_class = SensorStateClass.MEASUREMENT
+    _attr_icon = "mdi:battery-arrow-down-outline"
+
+    @property
+    def unique_id(self) -> str:
+        """Унікальний ID датчика."""
+        return f"{self._entry.entry_id}_battery_power"
+
+    @property
+    def native_value(self) -> float | None:
+        """Поточне значення датчика в Ватах.
+
+        Позитивне = розряд, негативне = заряд
+        """
+        output_power = self.coordinator.data.get("total_output_power", 0)
+        input_power = self.coordinator.data.get("total_input_power", 0)
+
+        # Нормалізуємо значення якщо потрібно
+        output = float(output_power) / 10.0 if output_power > 1000 else float(output_power)
+        input_val = float(input_power) / 10.0 if input_power > 1000 else float(input_power)
+
+        # Розряд (позитивне) - заряд (негативне)
+        return output - input_val

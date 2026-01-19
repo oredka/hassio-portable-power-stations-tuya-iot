@@ -70,7 +70,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if unload_ok:
         # Закриваємо API з'єднання
         coordinator = hass.data[DOMAIN][entry.entry_id]
-        await coordinator.api.close()
+        coordinator.api.close()
 
         # Видаляємо дані з hass.data
         hass.data[DOMAIN].pop(entry.entry_id)

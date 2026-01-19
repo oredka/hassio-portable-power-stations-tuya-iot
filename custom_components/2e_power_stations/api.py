@@ -30,16 +30,14 @@ class TwoEPowerStationAPI:
         self.access_secret = access_secret
         self.endpoint = endpoint
 
-        _LOGGER.debug("Initializing Tuya Connector API - Endpoint: %s", endpoint)
         # Використовуємо офіційний tuya-connector-python SDK
         self.api = TuyaOpenAPI(endpoint, access_id, access_secret)
         self.api.connect()
-        _LOGGER.debug("Tuya API initialized and connected")
+        _LOGGER.debug("Tuya API initialized - Endpoint: %s", endpoint)
 
-    async def close(self) -> None:
+    def close(self) -> None:
         """Закрити з'єднання."""
         # Tuya SDK не потребує явного закриття
-        pass
 
     def get_device_status(self) -> dict[str, Any]:
         """Отримати статус пристрою.
@@ -48,15 +46,12 @@ class TwoEPowerStationAPI:
             Словник зі статусом всіх data points
         """
         response = self.api.get(f"/v1.0/devices/{self.device_id}/status")
-        if response.get("success"):
-            # Конвертуємо список status в словник
-            status_dict = {}
-            for item in response.get("result", []):
-                status_dict[item["code"]] = item["value"]
-            return status_dict
-        else:
+        if not response.get("success"):
             _LOGGER.error("Помилка отримання статусу: %s", response)
             return {}
+
+        # Конвертуємо список status в словник
+        return {item["code"]: item["value"] for item in response.get("result", [])}
 
     def get_device_info(self) -> dict[str, Any]:
         """Отримати інформацію про пристрій.
@@ -68,29 +63,28 @@ class TwoEPowerStationAPI:
             PermissionError: Якщо немає доступу до пристрою (код 1106)
             ConnectionError: Якщо інша помилка підключення
         """
-        _LOGGER.debug("Requesting device info for device_id: %s", self.device_id)
         response = self.api.get(f"/v1.0/devices/{self.device_id}")
         _LOGGER.debug("Device info response: %s", response)
 
         if response.get("success"):
             return response.get("result", {})
-        else:
-            error_code = response.get("code")
-            error_msg = response.get("msg", "Unknown error")
 
-            if error_code == 1106:
-                _LOGGER.error(
-                    "Permission denied (1106) for device %s. "
-                    "Please ensure the device is linked to your Cloud Project via App Account authorization.",
-                    self.device_id
-                )
-                raise PermissionError(
-                    f"Permission denied for device {self.device_id}. "
-                    "Device must be authorized in Tuya IoT Platform via App Account."
-                )
+        error_code = response.get("code")
+        error_msg = response.get("msg", "Unknown error")
 
-            _LOGGER.error("Error getting device info: %s", response)
-            raise ConnectionError(f"Failed to get device info: {error_msg} (code: {error_code})")
+        if error_code == 1106:
+            _LOGGER.error(
+                "Permission denied (1106) for device %s. "
+                "Please ensure the device is linked to your Cloud Project via App Account authorization.",
+                self.device_id
+            )
+            raise PermissionError(
+                f"Permission denied for device {self.device_id}. "
+                "Device must be authorized in Tuya IoT Platform via App Account."
+            )
+
+        _LOGGER.error("Error getting device info: %s", response)
+        raise ConnectionError(f"Failed to get device info: {error_msg} (code: {error_code})")
 
     def send_command(self, code: str, value: Any) -> bool:
         """Відправити команду пристрою.
@@ -103,10 +97,7 @@ class TwoEPowerStationAPI:
             True якщо команда успішна
         """
         commands = {"commands": [{"code": code, "value": value}]}
-        response = self.api.post(
-            f"/v1.0/devices/{self.device_id}/commands",
-            commands
-        )
+        response = self.api.post(f"/v1.0/devices/{self.device_id}/commands", commands)
 
         success = response.get("success", False)
         if not success:
@@ -114,48 +105,6 @@ class TwoEPowerStationAPI:
 
         return success
 
-    def get_battery_level(self) -> int:
-        """Отримати рівень батареї у відсотках."""
-        status = self.get_device_status()
-        # Звичайні коди для рівня батареї в Tuya
-        return status.get("battery_percentage", status.get("va_battery", 0))
-
-    def get_power_output(self) -> float:
-        """Отримати поточну вихідну потужність у ватах."""
-        status = self.get_device_status()
-        # Можливі коди для потужності
-        return status.get("cur_power", status.get("power", 0))
-
-    def get_voltage(self) -> float:
-        """Отримати напругу у вольтах."""
-        status = self.get_device_status()
-        voltage = status.get("cur_voltage", status.get("voltage", 0))
-        # Часто Tuya повертає напругу в деці-вольтах
-        return voltage / 10.0 if voltage > 100 else voltage
-
-    def get_current(self) -> float:
-        """Отримати струм в амперах."""
-        status = self.get_device_status()
-        current = status.get("cur_current", status.get("current", 0))
-        # Часто Tuya повертає струм в мілі-амперах
-        return current / 1000.0 if current > 100 else current
-
-    def set_switch(self, switch_code: str, state: bool) -> bool:
-        """Увімкнути/вимкнути вихід.
-
-        Args:
-            switch_code: Код перемикача (наприклад "switch_1", "switch_usb")
-            state: True для увімкнення, False для вимкнення
-
-        Returns:
-            True якщо команда успішна
-        """
-        return self.send_command(switch_code, state)
-
-    def is_switch_on(self, switch_code: str) -> bool:
-        """Перевірити чи увімкнений перемикач."""
-        status = self.get_device_status()
-        return status.get(switch_code, False)
 
     def test_connection(self) -> tuple[bool, str]:
         """Перевірити з'єднання з Tuya Cloud.

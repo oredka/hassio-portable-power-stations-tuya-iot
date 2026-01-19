@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.1.0] - 2026-01-19
+
+### Added
+- Battery Power sensor for Energy Dashboard integration (sensor.battery_power)
+- Energy Dashboard documentation with setup instructions (ENERGY_DASHBOARD.md)
+- Support for Home Assistant Energy Dashboard battery configuration
+
+### Changed
+- Code refactoring: improved API client readability and removed unused methods
+- Removed unnecessary utility scripts and files
+- Simplified error handling and logging
+
+### Removed
+- GitLab CI/CD files (.gitlab-ci.yml, create_gitlab_release.py)
+- Unused utility scripts (create_github_release.py, list_devices.py)
+- Unused sensor data processor file
+- Installation documentation (moved to README)
+
 ## [1.0.4] - 2026-01-19
 
 ### Fixed
