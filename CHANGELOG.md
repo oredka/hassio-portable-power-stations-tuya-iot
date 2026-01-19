@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.4.1] - 2026-01-19
+
+### Fixed
+- Fixed timer select entities with correct Tuya enum values from IoT Platform specifications
+- AC/DC/LED Auto-Off Time now accepts: 2hour, 4hour, 8hour, 12hour, do_not_close
+- Standby Time now accepts: 3min, 5min, 15min, 60min, do_not_close
+- Display Auto-Off Time now accepts: 2min, 5min, 10min, 20min, do_not_close
+- Eliminated "command or value not support" (error 2008) for all timer settings
+
+### Changed
+- Restored timer select entities (writable via Tuya API with correct enum values)
+- Removed timer sensors (no longer needed now that selects work correctly)
+
 ## [1.4.0] - 2026-01-19
 
 ### Breaking Changes

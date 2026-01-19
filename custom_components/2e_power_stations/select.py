@@ -23,62 +23,45 @@ LED_MODE_OPTIONS = {
     "lamp_sos": "SOS",
 }
 
-# Timer options for AC/DC/LED auto-off
+# Timer options for AC/DC/LED auto-off - based on Tuya device specifications
 AC_OFF_TIME_OPTIONS = {
-    "never": "Never",
-    "1hour": "1 Hour",
     "2hour": "2 Hours",
-    "3hour": "3 Hours",
     "4hour": "4 Hours",
-    "5hour": "5 Hours",
-    "6hour": "6 Hours",
-    "7hour": "7 Hours",
     "8hour": "8 Hours",
-    "9hour": "9 Hours",
-    "10hour": "10 Hours",
-    "11hour": "11 Hours",
     "12hour": "12 Hours",
+    "do_not_close": "Never",
 }
 
 DC_OFF_TIME_OPTIONS = {
-    "never": "Never",
-    "1hour": "1 Hour",
     "2hour": "2 Hours",
-    "3hour": "3 Hours",
     "4hour": "4 Hours",
-    "5hour": "5 Hours",
-    "6hour": "6 Hours",
+    "8hour": "8 Hours",
+    "12hour": "12 Hours",
+    "do_not_close": "Never",
 }
 
 LED_OFF_TIME_OPTIONS = {
-    "never": "Never",
-    "10sec": "10 Seconds",
-    "30sec": "30 Seconds",
-    "1min": "1 Minute",
-    "2min": "2 Minutes",
-    "5min": "5 Minutes",
-    "1hour": "1 Hour",
     "2hour": "2 Hours",
+    "4hour": "4 Hours",
+    "8hour": "8 Hours",
+    "12hour": "12 Hours",
+    "do_not_close": "Never",
 }
 
 STANDBY_TIME_OPTIONS = {
-    "never": "Never",
-    "30sec": "30 Seconds",
-    "1min": "1 Minute",
-    "2min": "2 Minutes",
     "3min": "3 Minutes",
     "5min": "5 Minutes",
-    "10min": "10 Minutes",
-    "30min": "30 Minutes",
+    "15min": "15 Minutes",
+    "60min": "60 Minutes",
+    "do_not_close": "Never",
 }
 
 DISPLAY_OFF_TIME_OPTIONS = {
-    "never": "Never",
-    "10sec": "10 Seconds",
-    "30sec": "30 Seconds",
-    "1min": "1 Minute",
     "2min": "2 Minutes",
     "5min": "5 Minutes",
+    "10min": "10 Minutes",
+    "20min": "20 Minutes",
+    "do_not_close": "Never",
 }
 
 
