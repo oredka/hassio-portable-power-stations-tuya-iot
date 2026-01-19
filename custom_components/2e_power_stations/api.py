@@ -12,9 +12,9 @@ class TwoEPowerStationAPI:
 
     def __init__(
         self,
-        access_id: 4c3nmyn4kkypm8wp9hvx,
-        access_secret: 0ff7a678c6924e2aa4d9dc60a1dbcd6a,
-        device_id: bf6e1fd91f9c2d458cx0s9,
+        access_id: str,
+        access_secret: str,
+        device_id: str,
         endpoint: str = "https://openapi.tuyaeu.com",
     ) -> None:
         """Ініціалізація API клієнта.
