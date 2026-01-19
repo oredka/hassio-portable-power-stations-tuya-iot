@@ -31,8 +31,10 @@ class TwoEPowerStationAPI:
         self.endpoint = endpoint
 
         # Ініціалізація Tuya API
-        self.api = TuyaOpenAPI(endpoint, access_id, access_secret, AuthType.SMART_HOME)
+        self.api = TuyaOpenAPI(endpoint, access_id, access_secret)
         self.api.connect()
+
+        _LOGGER.debug("Tuya API connected. Token: %s", self.api.token_info)
 
     async def close(self) -> None:
         """Закрити з'єднання."""
