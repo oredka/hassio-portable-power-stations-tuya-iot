@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.1.2] - 2026-01-19
+
+### Changed
+- Improved entity display order: switches first, then selects, then sensors
+
 ## [1.1.1] - 2026-01-19
 
 ### Changed
