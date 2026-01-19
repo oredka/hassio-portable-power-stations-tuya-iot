@@ -31,11 +31,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     )
 
     # Перевіряємо з'єднання
-    connection_ok = await hass.async_add_executor_job(api.test_connection)
+    connection_ok, error_msg = await hass.async_add_executor_job(api.test_connection)
     if not connection_ok:
-        await api.close()
+        api.close()
         raise ConfigEntryNotReady(
-            f"Не вдалося з'єднатися з Tuya Cloud для пристрою {entry.data['device_id']}"
+            f"Не вдалося з'єднатися з Tuya Cloud для пристрою {entry.data['device_id']}: {error_msg}"
         )
 
     # Отримуємо інтервал оновлення з options або використовуємо за замовчуванням

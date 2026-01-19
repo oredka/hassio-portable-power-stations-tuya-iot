@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.2.0] - 2026-01-19
+
+### Added
+- High-resolution icon support (icon@2x.png) for better display quality
+
+### Fixed
+- Fixed connection test error handling in initialization
+- Improved error messages with detailed Tuya Cloud connection failures
+
+### Changed
+- Code cleanup and final refactoring for stable release
+
 ## [1.1.2] - 2026-01-19
 
 ### Changed
