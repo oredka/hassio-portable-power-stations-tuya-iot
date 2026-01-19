@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.2.1] - 2026-01-19
+
+### Added
+- Debug logging for LED Mode to diagnose configuration issues
+- Detailed error logging for select entity command failures
+
+### Changed
+- Improved diagnostic logging for Tuya data points
+
 ## [1.2.0] - 2026-01-19
 
 ### Added
