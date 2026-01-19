@@ -3,8 +3,8 @@
   "name": "Tuya IoT Power Stations",
   "codeowners": ["@oredka"],
   "config_flow": true,
-  "documentation": "https://github.com/oredka/tuya-iot-power-stations",
-  "issue_tracker": "https://github.com/oredka/tuya-iot-power-stations/issues",
+  "documentation": "https://github.com/oredka/hassio-portable-power-stations-tuya-iot",
+  "issue_tracker": "https://github.com/oredka/hassio-portable-power-stations-tuya-iot/issues",
   "requirements": ["tuya-connector-python"],
   "version": "2.0.0",
   "iot_class": "cloud_polling"
