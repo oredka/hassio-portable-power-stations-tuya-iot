@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.3] - 2026-01-19
+
+### Fixed
+- Fixed icon/logo display - removed URLs from manifest.json, Home Assistant now uses local icon.png and logo.png files
+
 ## [1.0.2] - 2026-01-19
 
 ### Added
