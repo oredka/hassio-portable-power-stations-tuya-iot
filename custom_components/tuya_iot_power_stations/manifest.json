@@ -6,6 +6,6 @@
   "documentation": "https://github.com/oredka/hassio-portable-power-stations-tuya-iot",
   "issue_tracker": "https://github.com/oredka/hassio-portable-power-stations-tuya-iot/issues",
   "requirements": ["tuya-connector-python"],
-  "version": "2.0.2",
+  "version": "2.0.3",
   "iot_class": "cloud_polling"
 }
