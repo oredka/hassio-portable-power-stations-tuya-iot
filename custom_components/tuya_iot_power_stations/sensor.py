@@ -99,7 +99,7 @@ class PowerStationSensorBase(CoordinatorEntity, SensorEntity):
 class PowerStationBatterySensor(PowerStationSensorBase):
     """Датчик рівня батареї."""
 
-    _attr_name = "Main Battery Level"
+    _attr_name = "Battery Level"
     _attr_native_unit_of_measurement = PERCENTAGE
     _attr_device_class = SensorDeviceClass.BATTERY
     _attr_state_class = SensorStateClass.MEASUREMENT
