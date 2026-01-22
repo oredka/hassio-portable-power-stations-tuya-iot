@@ -1,4 +1,4 @@
-"""Датчики для Tuya IoT Power Stations."""
+"""Sensors for Tuya IoT Power Stations."""
 import logging
 from typing import Any
 
@@ -31,12 +31,12 @@ async def async_setup_entry(
     entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Налаштування датчиків з config entry."""
+    """Set up sensors from a config entry."""
     coordinator = hass.data[DOMAIN][entry.entry_id]
 
     # Base sensors - always add
     entities = [
-        PowerStationBatterySensor(coordinator, entry),
+        PowerStationBatteryLevelSensor(coordinator, entry),
     ]
 
     # Power sensors - add if available in data
@@ -64,7 +64,7 @@ async def async_setup_entry(
         entities.append(PowerStationUSBCPowerSensor(coordinator, entry, 2))
 
     # Battery power sensor (positive = discharge, negative = charge)
-    # Цей сенсор використовується для Energy Dashboard
+    # This sensor is used for Energy Dashboard
     if "total_input_power" in coordinator.data or "total_output_power" in coordinator.data:
         entities.append(PowerStationBatteryPowerSensor(coordinator, entry))
 
@@ -87,10 +87,10 @@ async def async_setup_entry(
 
 
 class PowerStationSensorBase(CoordinatorEntity, SensorEntity):
-    """Базовий клас для датчиків Tuya IoT Power Station."""
+    """Base class for Tuya IoT Power Station sensors."""
 
     def __init__(self, coordinator, entry: ConfigEntry) -> None:
-        """Ініціалізація датчика."""
+        """Initialize sensor."""
         super().__init__(coordinator)
         self._entry = entry
         
@@ -105,8 +105,8 @@ class PowerStationSensorBase(CoordinatorEntity, SensorEntity):
         }
 
 
-class PowerStationBatterySensor(PowerStationSensorBase):
-    """Датчик рівня батареї."""
+class PowerStationBatteryLevelSensor(PowerStationSensorBase):
+    """Battery level sensor."""
 
     _attr_name = "Battery Level"
     _attr_native_unit_of_measurement = PERCENTAGE
@@ -115,17 +115,17 @@ class PowerStationBatterySensor(PowerStationSensorBase):
 
     @property
     def unique_id(self) -> str:
-        """Унікальний ID датчика."""
+        """Unique ID for sensor."""
         return f"{self._entry.entry_id}_battery"
 
     @property
     def native_value(self) -> int | None:
-        """Поточне значення датчика."""
+        """Current value of sensor."""
         return self.coordinator.data.get("battery_percentage", 0)
 
     @property
     def entity_picture(self) -> str | None:
-        """Картинка пристрою."""
+        """Device picture."""
         device_name = self._entry.title.lower()
         if "syayvo" in device_name:
             return f"/local/community/{DOMAIN}/2e_syayvo.jpg"
@@ -135,7 +135,7 @@ class PowerStationBatterySensor(PowerStationSensorBase):
 
 
 class PowerStationInputPowerSensor(PowerStationSensorBase):
-    """Датчик вхідної потужності."""
+    """Input power sensor."""
 
     _attr_name = "Total In Power"
     _attr_native_unit_of_measurement = UnitOfPower.WATT
@@ -145,18 +145,18 @@ class PowerStationInputPowerSensor(PowerStationSensorBase):
 
     @property
     def unique_id(self) -> str:
-        """Унікальний ID датчика."""
+        """Unique ID for sensor."""
         return f"{self._entry.entry_id}_input_power"
 
     @property
     def native_value(self) -> float | None:
-        """Поточне значення датчика."""
+        """Current value of sensor."""
         power = self.coordinator.data.get("total_input_power", 0)
         return float(power)
 
 
 class PowerStationOutputPowerSensor(PowerStationSensorBase):
-    """Датчик вихідної потужності."""
+    """Output power sensor."""
 
     _attr_name = "Total Out Power"
     _attr_native_unit_of_measurement = UnitOfPower.WATT
@@ -166,18 +166,18 @@ class PowerStationOutputPowerSensor(PowerStationSensorBase):
 
     @property
     def unique_id(self) -> str:
-        """Унікальний ID датчика."""
+        """Unique ID for sensor."""
         return f"{self._entry.entry_id}_output_power"
 
     @property
     def native_value(self) -> float | None:
-        """Поточне значення датчика."""
+        """Current value of sensor."""
         power = self.coordinator.data.get("total_output_power", 0)
         return float(power)
 
 
 class PowerStationACPowerSensor(PowerStationSensorBase):
-    """Датчик потужності AC виходу."""
+    """AC output power sensor."""
 
     _attr_name = "AC Out Power"
     _attr_native_unit_of_measurement = UnitOfPower.WATT
@@ -187,18 +187,18 @@ class PowerStationACPowerSensor(PowerStationSensorBase):
 
     @property
     def unique_id(self) -> str:
-        """Унікальний ID датчика."""
+        """Unique ID for sensor."""
         return f"{self._entry.entry_id}_ac_power"
 
     @property
     def native_value(self) -> float | None:
-        """Поточне значення датчика."""
+        """Current value of sensor."""
         power = self.coordinator.data.get("ac_output_power", 0)
         return float(power)
 
 
 class PowerStationDCPowerSensor(PowerStationSensorBase):
-    """Датчик потужності DC виходу."""
+    """DC output power sensor."""
 
     _attr_name = "DC Out Power"
     _attr_native_unit_of_measurement = UnitOfPower.WATT
@@ -208,21 +208,21 @@ class PowerStationDCPowerSensor(PowerStationSensorBase):
 
     @property
     def unique_id(self) -> str:
-        """Унікальний ID датчика."""
+        """Unique ID for sensor."""
         return f"{self._entry.entry_id}_dc_power"
 
     @property
     def native_value(self) -> float | None:
-        """Поточне значення датчика."""
+        """Current value of sensor."""
         power = self.coordinator.data.get("dc_output_power", 0)
         return float(power)
 
 
 class PowerStationUSBPowerSensor(PowerStationSensorBase):
-    """Датчик потужності USB порту."""
+    """USB port power sensor."""
 
     def __init__(self, coordinator, entry: ConfigEntry, port_num: int) -> None:
-        """Ініціалізація датчика."""
+        """Initialize sensor."""
         super().__init__(coordinator, entry)
         self._port_num = port_num
         self._attr_name = f"USB{port_num} Out Power"
@@ -234,21 +234,21 @@ class PowerStationUSBPowerSensor(PowerStationSensorBase):
 
     @property
     def unique_id(self) -> str:
-        """Унікальний ID датчика."""
+        """Unique ID for sensor."""
         return f"{self._entry.entry_id}_usb{self._port_num}_power"
 
     @property
     def native_value(self) -> float | None:
-        """Поточне значення датчика."""
+        """Current value of sensor."""
         power = self.coordinator.data.get(f"usb{self._port_num}_output_power", 0)
         return float(power)
 
 
 class PowerStationUSBCPowerSensor(PowerStationSensorBase):
-    """Датчик потужності USB-C порту."""
+    """USB-C port power sensor."""
 
     def __init__(self, coordinator, entry: ConfigEntry, port_num: int) -> None:
-        """Ініціалізація датчика."""
+        """Initialize sensor."""
         super().__init__(coordinator, entry)
         self._port_num = port_num
         self._attr_name = f"USB-C{port_num} Out Power"
@@ -260,18 +260,18 @@ class PowerStationUSBCPowerSensor(PowerStationSensorBase):
 
     @property
     def unique_id(self) -> str:
-        """Унікальний ID датчика."""
+        """Unique ID for sensor."""
         return f"{self._entry.entry_id}_usbc{self._port_num}_power"
 
     @property
     def native_value(self) -> float | None:
-        """Поточне значення датчика."""
+        """Current value of sensor."""
         power = self.coordinator.data.get(f"usb_c{self._port_num}_output_power", 0)
         return float(power)
 
 
 class PowerStationTemperatureSensor(PowerStationSensorBase):
-    """Датчик температури."""
+    """Temperature sensor."""
 
     _attr_name = "Battery Temperature"
     _attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
@@ -280,72 +280,72 @@ class PowerStationTemperatureSensor(PowerStationSensorBase):
 
     @property
     def unique_id(self) -> str:
-        """Унікальний ID датчика."""
+        """Unique ID for sensor."""
         return f"{self._entry.entry_id}_temperature"
 
     @property
     def native_value(self) -> float | None:
-        """Поточне значення датчика."""
+        """Current value of sensor."""
         temp = self.coordinator.data.get("temp_current", 0)
         return float(temp)
 
 
 class PowerStationFrequencySensor(PowerStationSensorBase):
-    """Датчик напруги та частоти AC."""
+    """AC voltage and frequency sensor."""
 
     _attr_name = "AC Voltage/Frequency"
     _attr_icon = "mdi:sine-wave"
 
     @property
     def unique_id(self) -> str:
-        """Унікальний ID датчика."""
+        """Unique ID for sensor."""
         return f"{self._entry.entry_id}_ac_voltage_freq"
 
     @property
     def native_value(self) -> str | None:
-        """Поточне значення датчика."""
+        """Current value of sensor."""
         freq = self.coordinator.data.get("ac_voltage_freq", "Unknown")
         return str(freq)
 
 
 class PowerStationErrorSensor(PowerStationSensorBase):
-    """Датчик коду помилки."""
+    """Error code sensor."""
 
     _attr_name = "Error Code"
     _attr_icon = "mdi:alert-circle-outline"
 
     @property
     def unique_id(self) -> str:
-        """Унікальний ID датчика."""
+        """Unique ID for sensor."""
         return f"{self._entry.entry_id}_error_code"
 
     @property
     def native_value(self) -> str | None:
-        """Поточне значення датчика."""
+        """Current value of sensor."""
         error = self.coordinator.data.get("error_code", 0)
         return str(error) if error else "No errors"
 
 
 class PowerStationInputTypeSensor(PowerStationSensorBase):
-    """Датчик типу вхідного живлення."""
+    """Input power type sensor."""
 
     _attr_name = "Input Type"
     _attr_icon = "mdi:power-plug"
 
     @property
     def unique_id(self) -> str:
-        """Унікальний ID датчика."""
+        """Unique ID for sensor."""
         return f"{self._entry.entry_id}_input_type"
 
     @property
     def native_value(self) -> str | None:
-        """Поточне значення датчика."""
+        """Current value of sensor."""
         input_type = self.coordinator.data.get("input_type", "unknown")
         return str(input_type)
 
 
 class PowerStationChargeEnergySensor(PowerStationSensorBase):
-    """Датчик енергії заряду батареї (для Energy Dashboard)."""
+    """Battery charge energy sensor (for Energy Dashboard)."""
 
     _attr_name = "Battery Charge Energy"
     _attr_native_unit_of_measurement = UnitOfEnergy.KILO_WATT_HOUR
@@ -355,19 +355,19 @@ class PowerStationChargeEnergySensor(PowerStationSensorBase):
 
     @property
     def unique_id(self) -> str:
-        """Унікальний ID датчика."""
+        """Unique ID for sensor."""
         return f"{self._entry.entry_id}_charge_energy"
 
     @property
     def native_value(self) -> float | None:
-        """Поточне значення датчика в kWh."""
+        """Current value of sensor in kWh."""
         energy = self.coordinator.data.get("charge_energy", 0)
-        # Конвертуємо Wh в kWh якщо потрібно
+        # Convert Wh to kWh if needed
         return float(energy) / 1000.0 if energy > 100 else float(energy)
 
 
 class PowerStationDischargeEnergySensor(PowerStationSensorBase):
-    """Датчик енергії розряду батареї (для Energy Dashboard)."""
+    """Battery discharge energy sensor (for Energy Dashboard)."""
 
     _attr_name = "Battery Discharge Energy"
     _attr_native_unit_of_measurement = UnitOfEnergy.KILO_WATT_HOUR
@@ -377,22 +377,22 @@ class PowerStationDischargeEnergySensor(PowerStationSensorBase):
 
     @property
     def unique_id(self) -> str:
-        """Унікальний ID датчика."""
+        """Unique ID for sensor."""
         return f"{self._entry.entry_id}_discharge_energy"
 
     @property
     def native_value(self) -> float | None:
-        """Поточне значення датчика в kWh."""
+        """Current value of sensor in kWh."""
         energy = self.coordinator.data.get("discharge_energy", 0)
-        # Конвертуємо Wh в kWh якщо потрібно
+        # Convert Wh to kWh if needed
         return float(energy) / 1000.0 if energy > 100 else float(energy)
 
 
 class PowerStationBatteryPowerSensor(PowerStationSensorBase):
-    """Датчик потужності батареї (для Energy Dashboard).
+    """Battery power sensor (for Energy Dashboard).
 
-    Позитивне значення = розряд батареї (output)
-    Негативне значення = заряд батареї (input)
+    Positive value = battery discharge (output)
+    Negative value = battery charge (input)
     """
 
     _attr_name = "Battery Power"
@@ -403,19 +403,19 @@ class PowerStationBatteryPowerSensor(PowerStationSensorBase):
 
     @property
     def unique_id(self) -> str:
-        """Унікальний ID датчика."""
+        """Unique ID for sensor."""
         return f"{self._entry.entry_id}_battery_power"
 
     @property
     def native_value(self) -> float | None:
-        """Поточне значення датчика в Ватах.
+        """Current value of sensor in Watts.
 
-        Позитивне = розряд, негативне = заряд
+        Positive = discharge, negative = charge
         """
         output_power = self.coordinator.data.get("total_output_power", 0)
         input_power = self.coordinator.data.get("total_input_power", 0)
 
-        # Розряд (позитивне) - заряд (негативне)
+        # Discharge (positive) - charge (negative)
         return float(output_power) - float(input_power)
 
 

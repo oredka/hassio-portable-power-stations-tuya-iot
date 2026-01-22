@@ -1,5 +1,5 @@
 {
-  "name": "Tuya IoT Power Stations",
+  "name": "Tuya IoT Smart Portable Power Stations for Home Assistant",
   "content_type": "integration",
   "domains": ["sensor", "switch", "select", "binary_sensor"],
   "iot_class": "cloud_polling",

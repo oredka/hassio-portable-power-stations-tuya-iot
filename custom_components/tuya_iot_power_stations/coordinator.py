@@ -1,4 +1,4 @@
-"""DataUpdateCoordinator для Tuya IoT Power Stations."""
+"""DataUpdateCoordinator for Tuya IoT Power Stations."""
 import logging
 from datetime import timedelta
 from typing import Any
@@ -13,7 +13,7 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class TwoEPowerStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
-    """Координатор для оновлення даних з Tuya IoT Power Station."""
+    """Coordinator to update data from Tuya IoT Power Station."""
 
     def __init__(
         self,
@@ -21,12 +21,12 @@ class TwoEPowerStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         api: TwoEPowerStationAPI,
         update_interval: int = UPDATE_INTERVAL,
     ) -> None:
-        """Ініціалізація координатора.
+        """Initialize coordinator.
 
         Args:
             hass: Home Assistant instance
-            api: API клієнт для взаємодії з power station
-            update_interval: Інтервал оновлення в секундах
+            api: API client to interact with power station
+            update_interval: Update interval in seconds
         """
         self.api = api
 
@@ -38,37 +38,37 @@ class TwoEPowerStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         )
 
     async def _async_update_data(self) -> dict[str, Any]:
-        """Отримати оновлені дані з power station.
+        """Fetch updated data from power station.
 
         Returns:
-            Словник з усіма даними про пристрій (всі Tuya data points)
+            Dictionary with all device data (all Tuya data points)
 
         Raises:
-            UpdateFailed: Якщо оновлення не вдалося
+            UpdateFailed: If update fails
         """
         try:
-            # Tuya SDK не async, тому виконуємо в executor
+            # Tuya SDK is not async, so we run in executor
             status = await self.hass.async_add_executor_job(
                 self.api.get_device_status
             )
 
             if not status:
-                # API повертає {}, якщо пристрій офлайн або є помилка
-                # Ми вже залогували це в api.py як WARNING (якщо офлайн) або ERROR
-                raise UpdateFailed("Отримано порожній статус від пристрою")
+                # API returns {} if device is offline or there is an error
+                # This is already logged in api.py
+                raise UpdateFailed("Received empty status from device")
 
-            # Логуємо отримані data points для налагодження
-            _LOGGER.debug("Отримано статус з Tuya: %s", status)
+            # Log received data points for debugging
+            _LOGGER.debug("Received status from Tuya: %s", status)
 
-            # Повертаємо весь статус - він містить всі data points з Tuya
-            # Кожен сенсор/перемикач буде брати свій data point
+            # Return the entire status - it contains all data points from Tuya
+            # Each sensor/switch will take its own data point
             return status
 
         except UpdateFailed:
             raise
         except Exception as err:
             if "device is offline" in str(err).lower():
-                _LOGGER.warning("Пристрій офлайн під час оновлення: %s", err)
+                _LOGGER.warning("Device offline during update: %s", err)
             else:
-                _LOGGER.error("Помилка оновлення даних: %s", err)
-            raise UpdateFailed(f"Помилка оновлення даних: {err}") from err
+                _LOGGER.error("Error updating data: %s", err)
+            raise UpdateFailed(f"Error updating data: {err}") from err

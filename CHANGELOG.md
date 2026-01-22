@@ -1,5 +1,26 @@
 # Changelog
 
+## [2.4.1] - 2026-01-23
+
+### Fixed
+- **500 Internal Server Error**: Improved robustness of Options Flow to prevent server errors when opening integration configuration.
+- **Name Change**: Updated integration name to "Tuya IoT Smart Portable Power Stations for Home Assistant" as requested.
+
+## [2.4.0] - 2026-01-23
+
+### Added
+- **Multi-device Setup**: Users can now add multiple Tuya Device IDs separated by commas during the initial configuration.
+- **Auto-Discovery Notifications**: The integration now periodically checks for new devices in the same Tuya IoT project and notifies the user via persistent notifications in Home Assistant.
+
+### Changed
+- **Code Standards**: Refactored Python codebase to meet Home Assistant quality standards.
+- **Language Localization**: All code comments and docstrings are now in English. 
+- **Ukrainian Support**: Ukrainian language is preserved for the Home Assistant UI via standard translation files.
+- **Performance**: Moved blocking imports to top-level and optimized initialization sequence.
+
+### Fixed
+- **Endpoint Handling**: Improved robustness of Tuya regional endpoint selection and storage.
+
 ## [2.3.0] - 2026-01-23
 
 ### Added

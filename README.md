@@ -1,4 +1,4 @@
-# Tuya IoT Power Stations for Home Assistant
+# Tuya IoT Smart Portable Power Stations for Home Assistant
 
 Home Assistant integration for Tuya IoT Power Stations. Supports various portable power stations including **2E Syayvo** and **Apower 2000** connected via Tuya IoT Cloud.
 
@@ -30,12 +30,16 @@ This integration is designed for portable power stations using Tuya IoT Cloud AP
 ### Setup
 
 1. Add integration in Home Assistant: **Settings → Devices & Services → Add Integration**
-2. Search for "Tuya IoT Power Stations"
+2. Search for "Tuya IoT Smart Portable Power Stations for Home Assistant"
 3. Enter your Tuya Cloud credentials:
    - Access ID
    - Access Secret
-   - Device ID
-   - Region (EU/US/China/India)
+   - Device ID(s) - You can enter multiple IDs separated by commas
+   - Region (Europe/America/China/India)
+
+## Auto-Discovery
+
+Once the integration is set up, it will periodically check your Tuya IoT project for new compatible devices. If a new station is found, Home Assistant will send a persistent notification with instructions on how to add it.
 
 ## Available Entities
 

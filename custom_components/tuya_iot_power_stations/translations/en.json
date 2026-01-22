@@ -2,18 +2,18 @@
   "config": {
     "step": {
       "user": {
-        "title": "Setup Tuya IoT Power Station",
+        "title": "Setup Tuya IoT Smart Portable Power Stations for Home Assistant",
         "description": "Enter your Tuya IoT Cloud credentials. Get them at https://iot.tuya.com",
         "data": {
           "access_id": "Tuya Access ID",
           "access_secret": "Tuya Access Secret",
-          "device_id": "Device ID",
+          "device_id": "Device ID(s)",
           "endpoint": "Region"
         },
         "data_description": {
           "access_id": "Access ID from Tuya IoT Platform",
           "access_secret": "Access Secret from Tuya IoT Platform",
-          "device_id": "Your device ID in Tuya",
+          "device_id": "Your device ID(s) in Tuya (comma separated)",
           "endpoint": "Select Tuya Cloud region"
         }
       }
@@ -29,7 +29,7 @@
   "options": {
     "step": {
       "init": {
-        "title": "Tuya IoT Power Station Options",
+        "title": "Tuya IoT Smart Portable Power Stations for Home Assistant Options",
         "data": {
           "scan_interval": "Update interval (seconds)"
         },

@@ -1,4 +1,4 @@
-"""Перемикачі для Tuya IoT Power Stations."""
+"""Switches for Tuya IoT Power Stations."""
 import logging
 from typing import Any
 
@@ -18,7 +18,7 @@ async def async_setup_entry(
     entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Налаштування перемикачів з config entry."""
+    """Set up switches from a config entry."""
     coordinator = hass.data[DOMAIN][entry.entry_id]
 
     entities = []
@@ -42,10 +42,10 @@ async def async_setup_entry(
 
 
 class PowerStationSwitchBase(CoordinatorEntity, SwitchEntity):
-    """Базовий клас для перемикачів Tuya IoT Power Station."""
+    """Base class for Tuya IoT Power Station switches."""
 
     def __init__(self, coordinator, entry: ConfigEntry, switch_code: str) -> None:
-        """Ініціалізація перемикача."""
+        """Initialize switch."""
         super().__init__(coordinator)
         self._entry = entry
         self._switch_code = switch_code
@@ -62,18 +62,18 @@ class PowerStationSwitchBase(CoordinatorEntity, SwitchEntity):
 
     @property
     def is_on(self) -> bool:
-        """Чи увімкнений перемикач."""
+        """Return true if switch is on."""
         return self.coordinator.data.get(self._switch_code, False)
 
     async def async_turn_on(self, **kwargs: Any) -> None:
-        """Увімкнути перемикач."""
+        """Turn the switch on."""
         await self.hass.async_add_executor_job(
             self.coordinator.api.send_command, self._switch_code, True
         )
         await self.coordinator.async_request_refresh()
 
     async def async_turn_off(self, **kwargs: Any) -> None:
-        """Вимкнути перемикач."""
+        """Turn the switch off."""
         await self.hass.async_add_executor_job(
             self.coordinator.api.send_command, self._switch_code, False
         )
@@ -81,60 +81,60 @@ class PowerStationSwitchBase(CoordinatorEntity, SwitchEntity):
 
 
 class PowerStationACOutputSwitch(PowerStationSwitchBase):
-    """Перемикач AC виходу."""
+    """AC output switch."""
 
     def __init__(self, coordinator, entry: ConfigEntry) -> None:
-        """Ініціалізація перемикача."""
+        """Initialize switch."""
         super().__init__(coordinator, entry, "switch_ac")
         self._attr_name = "AC Enabled"
         self._attr_icon = "mdi:power-socket-eu"
 
     @property
     def unique_id(self) -> str:
-        """Унікальний ID перемикача."""
+        """Return unique ID."""
         return f"{self._entry.entry_id}_ac_output"
 
 
 class PowerStationDCOutputSwitch(PowerStationSwitchBase):
-    """Перемикач DC виходу."""
+    """DC output switch."""
 
     def __init__(self, coordinator, entry: ConfigEntry) -> None:
-        """Ініціалізація перемикача."""
+        """Initialize switch."""
         super().__init__(coordinator, entry, "switch_dc")
         self._attr_name = "DC (12V) Enabled"
         self._attr_icon = "mdi:power-plug-outline"
 
     @property
     def unique_id(self) -> str:
-        """Унікальний ID перемикача."""
+        """Return unique ID."""
         return f"{self._entry.entry_id}_dc_output"
 
 
 class PowerStationUSBOutputSwitch(PowerStationSwitchBase):
-    """Перемикач USB виходу."""
+    """USB output switch."""
 
     def __init__(self, coordinator, entry: ConfigEntry) -> None:
-        """Ініціалізація перемикача."""
+        """Initialize switch."""
         super().__init__(coordinator, entry, "switch_usb")
         self._attr_name = "USB Enabled"
         self._attr_icon = "mdi:usb-port"
 
     @property
     def unique_id(self) -> str:
-        """Унікальний ID перемикача."""
+        """Return unique ID."""
         return f"{self._entry.entry_id}_usb_output"
 
 
 class PowerStationBuzzerSwitch(PowerStationSwitchBase):
-    """Перемикач звукового сигналу."""
+    """Buzzer switch."""
 
     def __init__(self, coordinator, entry: ConfigEntry) -> None:
-        """Ініціалізація перемикача."""
+        """Initialize switch."""
         super().__init__(coordinator, entry, "switch_buzzer")
         self._attr_name = "Beeper"
         self._attr_icon = "mdi:volume-high"
 
     @property
     def unique_id(self) -> str:
-        """Унікальний ID перемикача."""
+        """Return unique ID."""
         return f"{self._entry.entry_id}_buzzer"

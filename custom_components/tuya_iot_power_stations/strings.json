@@ -2,18 +2,18 @@
   "config": {
     "step": {
       "user": {
-        "title": "Налаштування Tuya IoT Power Station (2E Syayvo)",
+        "title": "Налаштування Tuya IoT Smart Portable Power Stations for Home Assistant",
         "description": "Введіть ваші Tuya IoT Cloud credentials. Отримайте їх на https://iot.tuya.com",
         "data": {
           "access_id": "Tuya Access ID",
           "access_secret": "Tuya Access Secret",
-          "device_id": "Device ID",
+          "device_id": "Device ID(s)",
           "endpoint": "Регіон"
         },
         "data_description": {
           "access_id": "Access ID з Tuya IoT Platform",
           "access_secret": "Access Secret з Tuya IoT Platform",
-          "device_id": "ID вашого пристрою в Tuya",
+          "device_id": "ID вашого пристрою(їв) в Tuya (можна декілька через кому)",
           "endpoint": "Виберіть регіон Tuya Cloud"
         }
       }
@@ -28,7 +28,7 @@
   "options": {
     "step": {
       "init": {
-        "title": "Налаштування Tuya IoT Power Station (2E Syayvo)",
+        "title": "Налаштування Tuya IoT Smart Portable Power Stations for Home Assistant",
         "data": {
           "scan_interval": "Інтервал оновлення (секунди)"
         },

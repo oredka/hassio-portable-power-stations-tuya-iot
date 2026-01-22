@@ -1,12 +1,12 @@
 {
   "domain": "tuya_iot_power_stations",
-  "name": "Tuya IoT Power Stations",
+  "name": "Tuya IoT Smart Portable Power Stations for Home Assistant",
   "codeowners": ["@oredka"],
   "config_flow": true,
   "documentation": "https://github.com/oredka/hassio-portable-power-stations-tuya-iot",
   "issue_tracker": "https://github.com/oredka/hassio-portable-power-stations-tuya-iot/issues",
   "requirements": ["tuya-connector-python"],
-  "version": "2.3.0",
+  "version": "2.4.1",
   "iot_class": "cloud_polling",
   "homeassistant": "2024.1.0",
   "brand": "tuya"

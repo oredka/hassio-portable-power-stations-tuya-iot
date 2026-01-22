@@ -1,4 +1,4 @@
-"""API клієнт для Tuya IoT Power Stations."""
+"""API client for Tuya IoT Power Stations."""
 import logging
 from typing import Any
 
@@ -8,7 +8,7 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class TwoEPowerStationAPI:
-    """Клас для взаємодії з Tuya IoT Power Station через Tuya Cloud API."""
+    """Class to interact with Tuya IoT Power Station via Tuya Cloud API."""
 
     def __init__(
         self,
@@ -17,55 +17,55 @@ class TwoEPowerStationAPI:
         device_id: str,
         endpoint: str = "https://openapi.tuyaeu.com",
     ) -> None:
-        """Ініціалізація API клієнта.
+        """Initialize API client.
 
         Args:
             access_id: Tuya Cloud Access ID
             access_secret: Tuya Cloud Access Secret
-            device_id: ID пристрою в Tuya Cloud
-            endpoint: Tuya Cloud API endpoint (за замовчуванням EU)
+            device_id: Device ID in Tuya Cloud
+            endpoint: Tuya Cloud API endpoint (default EU)
         """
         self.device_id = device_id
         self.access_id = access_id
         self.access_secret = access_secret
         self.endpoint = endpoint
 
-        # Використовуємо офіційний tuya-connector-python SDK
+        # Use official tuya-connector-python SDK
         self.api = TuyaOpenAPI(endpoint, access_id, access_secret)
         self.api.connect()
         _LOGGER.debug("Tuya API initialized - Endpoint: %s", endpoint)
 
     def close(self) -> None:
-        """Закрити з'єднання."""
-        # Tuya SDK не потребує явного закриття
+        """Close connection."""
+        # Tuya SDK does not require explicit closing
 
     def get_device_status(self) -> dict[str, Any]:
-        """Отримати статус пристрою.
+        """Get device status.
 
         Returns:
-            Словник зі статусом всіх data points
+            Dictionary with status of all data points
         """
         response = self.api.get(f"/v1.0/devices/{self.device_id}/status")
         if not response.get("success"):
             error_msg = response.get("msg", "Unknown error")
             if "device is offline" in error_msg.lower() or response.get("code") == 2001:
-                _LOGGER.warning("Пристрій офлайн: %s", error_msg)
+                _LOGGER.warning("Device offline: %s", error_msg)
             else:
-                _LOGGER.error("Помилка отримання статусу: %s", response)
+                _LOGGER.error("Error getting status: %s", response)
             return {}
 
-        # Конвертуємо список status в словник
+        # Convert status list to dictionary
         return {item["code"]: item["value"] for item in response.get("result", [])}
 
     def get_device_info(self) -> dict[str, Any]:
-        """Отримати інформацію про пристрій.
+        """Get device info.
 
         Returns:
-            Словник з інформацією про пристрій
+            Dictionary with device information
 
         Raises:
-            PermissionError: Якщо немає доступу до пристрою (код 1106)
-            ConnectionError: Якщо інша помилка підключення
+            PermissionError: If no access to device (code 1106)
+            ConnectionError: If other connection error
         """
         response = self.api.get(f"/v1.0/devices/{self.device_id}")
         _LOGGER.debug("Device info response: %s", response)
@@ -91,14 +91,14 @@ class TwoEPowerStationAPI:
         raise ConnectionError(f"Failed to get device info: {error_msg} (code: {error_code})")
 
     def send_command(self, code: str, value: Any) -> bool:
-        """Відправити команду пристрою.
+        """Send command to device.
 
         Args:
-            code: Код команди (data point)
-            value: Значення команди
+            code: Command code (data point)
+            value: Command value
 
         Returns:
-            True якщо команда успішна
+            True if command successful
         """
         commands = {"commands": [{"code": code, "value": value}]}
         response = self.api.post(f"/v1.0/devices/{self.device_id}/commands", commands)
@@ -107,21 +107,37 @@ class TwoEPowerStationAPI:
         if not success:
             error_msg = response.get("msg", "Unknown error")
             if "device is offline" in error_msg.lower() or response.get("code") == 2001:
-                _LOGGER.warning("Не вдалося відправити команду %s (пристрій офлайн): %s", code, error_msg)
+                _LOGGER.warning("Could not send command %s (device offline): %s", code, error_msg)
             else:
-                _LOGGER.error("Помилка відправки команди %s: %s", code, response)
+                _LOGGER.error("Error sending command %s: %s", code, response)
 
         return success
 
 
+    def get_all_devices(self) -> list[dict[str, Any]]:
+        """Get list of all devices available for this project.
+
+        Returns:
+            List of dictionaries with device information
+        """
+        # Endpoint to get device list by project
+        # See https://developer.tuya.com/en/docs/iot/list-devices?id=K9j6y60m66v1f
+        response = self.api.get("/v1.0/devices")
+        if not response.get("success"):
+            _LOGGER.error("Error getting device list: %s", response)
+            return []
+
+        return response.get("result", {}).get("list", [])
+
+
     def test_connection(self) -> tuple[bool, str]:
-        """Перевірити з'єднання з Tuya Cloud.
+        """Test connection to Tuya Cloud.
 
         Returns:
             Tuple of (success: bool, error_message: str)
         """
         try:
-            info = self.get_device_info()
+            self.get_device_info()
             return (True, "")
         except PermissionError as err:
             error_msg = (

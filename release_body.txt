@@ -1,18 +1,10 @@
-## Release 2.3.0 - Cumulative Update
+## Release 2.4.1
 
-This release consolidates recent improvements into a major version update, including multi-device support and UI enhancements.
+This release fixes critical UI issues and rebrands the integration for better clarity.
 
-### What's New
-- **Multi-device Support**: Officially added support for **Apower 2000** portable power stations.
-- **USB Output Control**: Added `switch.usb_enabled` to control USB output for compatible stations.
-- **Energy Dashboard Support**: Added `Battery Charge Energy` and `Battery Discharge Energy` sensors (kWh) for stations that report them.
-- **Product Images**: Added high-quality pictures for **2E Syayvo** and **Apower 2000**. These will now appear as the icon for the main battery sensor in Home Assistant.
-- **Official Branding**: Added official Tuya icons and branding to the integration.
-
-### Improved
-- **Logging**: Intermittent "device is offline" errors caused by Tuya cloud lag are now logged as WARNING instead of ERROR, keeping your Home Assistant Logbook cleaner.
-- **Power Scaling**: Fixed power readings for stations using 1W units.
-- **Energy Dashboard**: Corrected `Battery Power` sensor logic to match Home Assistant standards.
+### Fixed
+- **500 Internal Server Error**: Fixed a crash when opening the integration's configuration (Options Flow).
+- **Integration Name**: Renamed to "Tuya IoT Smart Portable Power Stations for Home Assistant" for better identification.
 
 ### Installation
 Update via HACS or by copying the `custom_components/tuya_iot_power_stations` folder to your Home Assistant installation.
