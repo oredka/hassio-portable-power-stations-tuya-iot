@@ -1,10 +1,18 @@
-## Release 2.2.1 - UI and Logging Improvements
+## Release 2.3.0 - Cumulative Update
 
-This release improves the user experience by adding device-specific pictures and reducing log noise.
+This release consolidates recent improvements into a major version update, including multi-device support and UI enhancements.
 
 ### What's New
+- **Multi-device Support**: Officially added support for **Apower 2000** portable power stations.
+- **USB Output Control**: Added `switch.usb_enabled` to control USB output for compatible stations.
+- **Energy Dashboard Support**: Added `Battery Charge Energy` and `Battery Discharge Energy` sensors (kWh) for stations that report them.
 - **Product Images**: Added high-quality pictures for **2E Syayvo** and **Apower 2000**. These will now appear as the icon for the main battery sensor in Home Assistant.
-- **Improved Logging**: Intermittent "device is offline" errors caused by Tuya cloud lag are now logged as WARNING instead of ERROR, keeping your Home Assistant Logbook cleaner.
+- **Official Branding**: Added official Tuya icons and branding to the integration.
+
+### Improved
+- **Logging**: Intermittent "device is offline" errors caused by Tuya cloud lag are now logged as WARNING instead of ERROR, keeping your Home Assistant Logbook cleaner.
+- **Power Scaling**: Fixed power readings for stations using 1W units.
+- **Energy Dashboard**: Corrected `Battery Power` sensor logic to match Home Assistant standards.
 
 ### Installation
 Update via HACS or by copying the `custom_components/tuya_iot_power_stations` folder to your Home Assistant installation.
