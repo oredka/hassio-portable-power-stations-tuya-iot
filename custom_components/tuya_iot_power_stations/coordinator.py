@@ -53,6 +53,8 @@ class TwoEPowerStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             )
 
             if not status:
+                # API повертає {}, якщо пристрій офлайн або є помилка
+                # Ми вже залогували це в api.py як WARNING (якщо офлайн) або ERROR
                 raise UpdateFailed("Отримано порожній статус від пристрою")
 
             # Логуємо отримані data points для налагодження
@@ -62,6 +64,11 @@ class TwoEPowerStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             # Кожен сенсор/перемикач буде брати свій data point
             return status
 
+        except UpdateFailed:
+            raise
         except Exception as err:
-            _LOGGER.error("Помилка оновлення даних: %s", err)
+            if "device is offline" in str(err).lower():
+                _LOGGER.warning("Пристрій офлайн під час оновлення: %s", err)
+            else:
+                _LOGGER.error("Помилка оновлення даних: %s", err)
             raise UpdateFailed(f"Помилка оновлення даних: {err}") from err

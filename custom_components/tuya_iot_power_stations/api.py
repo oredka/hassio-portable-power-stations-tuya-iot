@@ -47,7 +47,11 @@ class TwoEPowerStationAPI:
         """
         response = self.api.get(f"/v1.0/devices/{self.device_id}/status")
         if not response.get("success"):
-            _LOGGER.error("Помилка отримання статусу: %s", response)
+            error_msg = response.get("msg", "Unknown error")
+            if "device is offline" in error_msg.lower() or response.get("code") == 2001:
+                _LOGGER.warning("Пристрій офлайн: %s", error_msg)
+            else:
+                _LOGGER.error("Помилка отримання статусу: %s", response)
             return {}
 
         # Конвертуємо список status в словник
@@ -101,7 +105,11 @@ class TwoEPowerStationAPI:
 
         success = response.get("success", False)
         if not success:
-            _LOGGER.error("Помилка відправки команди %s: %s", code, response)
+            error_msg = response.get("msg", "Unknown error")
+            if "device is offline" in error_msg.lower() or response.get("code") == 2001:
+                _LOGGER.warning("Не вдалося відправити команду %s (пристрій офлайн): %s", code, error_msg)
+            else:
+                _LOGGER.error("Помилка відправки команди %s: %s", code, response)
 
         return success
 

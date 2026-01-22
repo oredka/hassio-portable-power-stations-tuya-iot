@@ -123,6 +123,16 @@ class PowerStationBatterySensor(PowerStationSensorBase):
         """Поточне значення датчика."""
         return self.coordinator.data.get("battery_percentage", 0)
 
+    @property
+    def entity_picture(self) -> str | None:
+        """Картинка пристрою."""
+        device_name = self._entry.title.lower()
+        if "syayvo" in device_name:
+            return f"/local/community/{DOMAIN}/2e_syayvo.jpg"
+        if "apower" in device_name:
+            return f"/local/community/{DOMAIN}/apower_2000.jpg"
+        return None
+
 
 class PowerStationInputPowerSensor(PowerStationSensorBase):
     """Датчик вхідної потужності."""

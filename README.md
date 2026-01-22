@@ -15,8 +15,8 @@ Home Assistant integration for Tuya IoT Power Stations. Supports various portabl
 ## Supported Devices
 
 This integration is designed for portable power stations using Tuya IoT Cloud API. It supports:
-- **2E Syayvo** (all models)
-- **Apower 2000**
+- **2E - SYAYVO**
+- **Apower - 2000**
 - Other models following the Tuya standard instruction set for power stations.
 
 ## Installation
