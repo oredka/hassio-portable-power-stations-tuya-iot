@@ -68,12 +68,17 @@ async def async_setup_entry(
     if "total_input_power" in coordinator.data or "total_output_power" in coordinator.data:
         entities.append(PowerStationBatteryPowerSensor(coordinator, entry))
 
-    # Other sensors
+    # Energy sensors
     if "charge_energy" in coordinator.data:
         entities.append(PowerStationChargeEnergySensor(coordinator, entry))
     if "discharge_energy" in coordinator.data:
         entities.append(PowerStationDischargeEnergySensor(coordinator, entry))
 
+    # Add Power-to-Energy integration sensors (helpers) if real energy sensors are missing
+    # Note: This usually requires user to add them in HA UI, 
+    # but we can provide the base power sensors with correct attributes.
+
+    # Other sensors
     if "temp_current" in coordinator.data:
         entities.append(PowerStationTemperatureSensor(coordinator, entry))
     if "ac_voltage_freq" in coordinator.data:
@@ -103,6 +108,12 @@ class PowerStationSensorBase(CoordinatorEntity, SensorEntity):
             "manufacturer": "Tuya",
             "model": "Portable Power Station",
         }
+        
+        # Set entity name to include device name for better identification
+        if hasattr(self, "_attr_name") and self._attr_name:
+            self._attr_name = f"{device_name} {self._attr_name}"
+            # Ensure entity_id is generated from the name including device name
+            self.entity_id = f"sensor.{device_name.lower().replace(' ', '_')}_{self._attr_name.split(' ', 1)[1].lower().replace(' ', '_')}"
 
 
 class PowerStationBatteryLevelSensor(PowerStationSensorBase):
@@ -122,16 +133,6 @@ class PowerStationBatteryLevelSensor(PowerStationSensorBase):
     def native_value(self) -> int | None:
         """Current value of sensor."""
         return self.coordinator.data.get("battery_percentage", 0)
-
-    @property
-    def entity_picture(self) -> str | None:
-        """Device picture."""
-        device_name = self._entry.title.lower()
-        if "syayvo" in device_name:
-            return f"/local/community/{DOMAIN}/2e_syayvo.jpg"
-        if "apower" in device_name:
-            return f"/local/community/{DOMAIN}/apower_2000.jpg"
-        return None
 
 
 class PowerStationInputPowerSensor(PowerStationSensorBase):
@@ -154,6 +155,11 @@ class PowerStationInputPowerSensor(PowerStationSensorBase):
         power = self.coordinator.data.get("total_input_power", 0)
         return float(power)
 
+    @property
+    def extra_state_attributes(self) -> dict[str, Any]:
+        """Return extra state attributes."""
+        return {"last_reset": "1970-01-01T00:00:00+00:00"}
+
 
 class PowerStationOutputPowerSensor(PowerStationSensorBase):
     """Output power sensor."""
@@ -174,6 +180,11 @@ class PowerStationOutputPowerSensor(PowerStationSensorBase):
         """Current value of sensor."""
         power = self.coordinator.data.get("total_output_power", 0)
         return float(power)
+
+    @property
+    def extra_state_attributes(self) -> dict[str, Any]:
+        """Return extra state attributes."""
+        return {"last_reset": "1970-01-01T00:00:00+00:00"}
 
 
 class PowerStationACPowerSensor(PowerStationSensorBase):
@@ -223,9 +234,9 @@ class PowerStationUSBPowerSensor(PowerStationSensorBase):
 
     def __init__(self, coordinator, entry: ConfigEntry, port_num: int) -> None:
         """Initialize sensor."""
+        self._attr_name = f"USB{port_num} Out Power"
         super().__init__(coordinator, entry)
         self._port_num = port_num
-        self._attr_name = f"USB{port_num} Out Power"
         self._attr_icon = "mdi:usb-port"
 
     _attr_native_unit_of_measurement = UnitOfPower.WATT
@@ -249,9 +260,9 @@ class PowerStationUSBCPowerSensor(PowerStationSensorBase):
 
     def __init__(self, coordinator, entry: ConfigEntry, port_num: int) -> None:
         """Initialize sensor."""
+        self._attr_name = f"USB-C{port_num} Out Power"
         super().__init__(coordinator, entry)
         self._port_num = port_num
-        self._attr_name = f"USB-C{port_num} Out Power"
         self._attr_icon = "mdi:usb-port"
 
     _attr_native_unit_of_measurement = UnitOfPower.WATT
@@ -417,6 +428,11 @@ class PowerStationBatteryPowerSensor(PowerStationSensorBase):
 
         # Discharge (positive) - charge (negative)
         return float(output_power) - float(input_power)
+
+    @property
+    def extra_state_attributes(self) -> dict[str, Any]:
+        """Return extra state attributes."""
+        return {"last_reset": "1970-01-01T00:00:00+00:00"}
 
 
 # Timer sensors (read-only) - cannot be changed via Tuya API

@@ -1,5 +1,21 @@
 # Changelog
 
+## [2.4.3] - 2026-01-23
+
+### Fixed
+- **Entity IDs**: Explicitly set entity IDs to include device model name (e.g., `sensor.apower_2000_battery_level`). This fixes the issue where multiple stations had generic names like `sensor.battery_level_2`.
+- **Multi-device Setup**: Improved stability of adding multiple devices via comma-separated IDs.
+- **Battery Icons**: Ensured standard Home Assistant battery icons are used by removing all custom image overrides.
+
+## [2.4.2] - 2026-01-23
+
+### Added
+- **Release Flow**: Created an automated GitHub Release workflow that triggers on version tags (e.g., `v2.4.2`).
+- **Improved Sensors**: Enhanced Energy Dashboard support with `last_reset` attributes.
+
+### Fixed
+- **Entity Naming**: Fixed issue where device names were not correctly prefixed to all entities.
+
 ## [2.4.1] - 2026-01-23
 
 ### Fixed

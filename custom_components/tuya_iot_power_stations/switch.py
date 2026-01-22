@@ -60,6 +60,12 @@ class PowerStationSwitchBase(CoordinatorEntity, SwitchEntity):
             "model": "Portable Power Station",
         }
 
+        # Set entity name to include device name for better identification
+        if hasattr(self, "_attr_name") and self._attr_name:
+            self._attr_name = f"{device_name} {self._attr_name}"
+            # Ensure entity_id is generated from the name including device name
+            self.entity_id = f"switch.{device_name.lower().replace(' ', '_')}_{self._attr_name.split(' ', 1)[1].lower().replace(' ', '_')}"
+
     @property
     def is_on(self) -> bool:
         """Return true if switch is on."""

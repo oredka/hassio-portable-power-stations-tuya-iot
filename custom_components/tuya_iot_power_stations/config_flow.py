@@ -104,20 +104,16 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 # If multiple devices, start flows for the rest
                 if len(device_ids) > 1:
                     for extra_id in device_ids[1:]:
+                        _LOGGER.debug("Initiating flow for extra device: %s", extra_id)
                         # Check if already configured
-                        await self.async_set_unique_id(extra_id, raise_on_progress=False)
-                        try:
-                            self._abort_if_unique_id_configured()
-                            
-                            # Validate extra device
-                            await self.hass.async_add_executor_job(
-                                validate_input, self.hass, user_input, extra_id
-                            )
-                            
-                            # Start a new flow for this device
-                            await self.hass.config_entries.flow.async_init(
+                        # Use self.hass.async_create_task to avoid blocking and ensure it runs in event loop
+                        self.hass.async_create_task(
+                            self.hass.config_entries.flow.async_init(
                                 DOMAIN,
-                                context={"source": config_entries.SOURCE_USER},
+                                context={
+                                    "source": config_entries.SOURCE_USER,
+                                    "show_id": extra_id # Not a standard field but helps tracking if needed
+                                },
                                 data={
                                     "access_id": user_input["access_id"],
                                     "access_secret": user_input["access_secret"],
@@ -125,8 +121,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                                     "endpoint": user_input["endpoint"],
                                 }
                             )
-                        except Exception as e:
-                            _LOGGER.warning("Could not add extra device %s: %s", extra_id, e)
+                        )
 
                 # Set unique ID for the first device
                 await self.async_set_unique_id(first_device_id)
@@ -176,12 +171,18 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
         if user_input is not None:
             return self.async_create_entry(title="", data=user_input)
 
+        # Get default scan interval from current options or data (for older versions)
+        current_scan_interval = self.config_entry.options.get(
+            "scan_interval", 
+            self.config_entry.data.get("scan_interval", 30)
+        )
+
         return self.async_show_form(
             step_id="init",
             data_schema=vol.Schema({
                 vol.Optional(
                     "scan_interval",
-                    default=self.config_entry.options.get("scan_interval", 30),
+                    default=current_scan_interval,
                 ): vol.All(vol.Coerce(int), vol.Range(min=10, max=300)),
             }),
         )

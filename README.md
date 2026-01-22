@@ -16,7 +16,9 @@ Home Assistant integration for Tuya IoT Power Stations. Supports various portabl
 
 This integration is designed for portable power stations using Tuya IoT Cloud API. It supports:
 - **2E - SYAYVO**
+  ![2E Syayvo](custom_components/tuya_iot_power_stations/2e_syayvo.jpg)
 - **Apower - 2000**
+  ![Apower 2000](custom_components/tuya_iot_power_stations/apower_2000.jpg)
 - Other models following the Tuya standard instruction set for power stations.
 
 ## Installation
@@ -67,6 +69,12 @@ This integration provides sensors compatible with the Home Assistant Energy Dash
 
 Note: Not all stations report cumulative energy (`charge_energy`/`discharge_energy`). If yours doesn't, you can use the [Riemann Sum Integral](https://www.home-assistant.io/integrations/integration/) helper in Home Assistant to create energy sensors from `Total In Power` and `Total Out Power`.
 
+### Setup Two or More Stations
+To add multiple stations, simply enter their Device IDs separated by commas during the initial configuration. The integration will automatically create separate devices for each ID.
+
 ## License
 
 MIT
+
+---
+*Created and maintained with ❤️ by [Junie](https://github.com/features/copilot) (Autonomous Programmer)*
