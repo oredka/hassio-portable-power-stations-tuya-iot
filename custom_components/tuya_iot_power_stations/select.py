@@ -1,4 +1,4 @@
-"""Select entities for Tuya IoT Power Stations (2E Syayvo)."""
+"""Select entities for Tuya IoT Power Stations."""
 import logging
 from typing import Any
 
@@ -102,11 +102,15 @@ class PowerStationSelectBase(CoordinatorEntity, SelectEntity):
         """Initialize select entity."""
         super().__init__(coordinator)
         self._entry = entry
+        
+        # Get device name from entry title
+        device_name = entry.title
+        
         self._attr_device_info = {
             "identifiers": {(DOMAIN, entry.entry_id)},
-            "name": "2E Syayvo",
-            "manufacturer": "2E",
-            "model": "Power Station",
+            "name": device_name,
+            "manufacturer": "Tuya",
+            "model": "Portable Power Station",
         }
 
 

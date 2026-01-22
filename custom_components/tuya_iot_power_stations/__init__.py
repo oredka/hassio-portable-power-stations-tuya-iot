@@ -1,4 +1,4 @@
-"""Інтеграція Tuya IoT Power Stations для Home Assistant (2E Syayvo)."""
+"""Інтеграція Tuya IoT Power Stations для Home Assistant."""
 import logging
 
 from homeassistant.config_entries import ConfigEntry

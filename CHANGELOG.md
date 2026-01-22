@@ -1,6 +1,20 @@
 # Changelog
 
-## [2.0.3] - 2026-01-21
+## [2.2.0] - 2026-01-23
+
+### Added
+- **Multi-device Support**: Officially added support for **Apower 2000** portable power stations.
+- **USB Output Control**: Added `switch.usb_enabled` to control USB output for compatible stations.
+- **Energy Dashboard Support**: Added `Battery Charge Energy` and `Battery Discharge Energy` sensors (kWh) for stations that report them.
+- **USB Status**: Added `binary_sensor.usb_output_status` for monitoring USB port activity.
+- **Official Branding**: Added official Tuya icons and branding to the integration.
+
+### Fixed
+- **Power Scaling**: Fixed power readings for stations using 1W units (removed incorrect division by 10 for values > 1000W).
+- **Energy Dashboard**: Corrected `Battery Power` sensor logic (positive = discharge, negative = charge) to match Home Assistant standards.
+- **Translations**: Improved English and Ukrainian translations, removing model-specific names from the setup flow.
+
+## [2.1.0] - 2026-01-22
 
 ### Changed
 - Renamed "Main Battery Level" to "Battery Level" (no other batteries present)

@@ -1,7 +1,6 @@
 {
   "name": "Tuya IoT Power Stations",
-  "filename": "tuya_iot_power_stations",
-  "render_readme": true,
+  "content_type": "integration",
   "domains": ["sensor", "switch", "select", "binary_sensor"],
   "iot_class": "cloud_polling",
   "homeassistant": "2024.1.0"

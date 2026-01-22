@@ -1,4 +1,4 @@
-"""DataUpdateCoordinator для Tuya IoT Power Stations (2E Syayvo)."""
+"""DataUpdateCoordinator для Tuya IoT Power Stations."""
 import logging
 from datetime import timedelta
 from typing import Any

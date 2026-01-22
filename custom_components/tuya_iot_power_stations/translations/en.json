@@ -2,7 +2,7 @@
   "config": {
     "step": {
       "user": {
-        "title": "Setup Tuya IoT Power Station (2E Syayvo)",
+        "title": "Setup Tuya IoT Power Station",
         "description": "Enter your Tuya IoT Cloud credentials. Get them at https://iot.tuya.com",
         "data": {
           "access_id": "Tuya Access ID",
@@ -29,7 +29,7 @@
   "options": {
     "step": {
       "init": {
-        "title": "Tuya IoT Power Station (2E Syayvo) Options",
+        "title": "Tuya IoT Power Station Options",
         "data": {
           "scan_interval": "Update interval (seconds)"
         },

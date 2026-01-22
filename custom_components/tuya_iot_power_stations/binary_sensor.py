@@ -1,4 +1,4 @@
-"""Binary sensors for Tuya IoT Power Stations (2E Syayvo)."""
+"""Binary sensors for Tuya IoT Power Stations."""
 import logging
 
 from homeassistant.components.binary_sensor import (
@@ -25,7 +25,8 @@ async def async_setup_entry(
 
     entities = []
 
-    if "switch_usb" in coordinator.data:
+    # USB Status (Read-only status)
+    if "usb_status" in coordinator.data:
         entities.append(PowerStationUSBStatusSensor(coordinator, entry))
 
     if entities:
@@ -39,11 +40,15 @@ class PowerStationBinarySensorBase(CoordinatorEntity, BinarySensorEntity):
         """Initialize binary sensor."""
         super().__init__(coordinator)
         self._entry = entry
+        
+        # Get device name from entry title
+        device_name = entry.title
+        
         self._attr_device_info = {
             "identifiers": {(DOMAIN, entry.entry_id)},
-            "name": "2E Syayvo",
-            "manufacturer": "2E",
-            "model": "Power Station",
+            "name": device_name,
+            "manufacturer": "Tuya",
+            "model": "Portable Power Station",
         }
 
 
@@ -62,4 +67,4 @@ class PowerStationUSBStatusSensor(PowerStationBinarySensorBase):
     @property
     def is_on(self) -> bool:
         """Return true if USB output is active."""
-        return self.coordinator.data.get("switch_usb", False)
+        return self.coordinator.data.get("usb_status", False)

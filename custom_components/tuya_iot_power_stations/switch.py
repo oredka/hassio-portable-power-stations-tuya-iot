@@ -1,4 +1,4 @@
-"""Перемикачі для Tuya IoT Power Stations (2E Syayvo)."""
+"""Перемикачі для Tuya IoT Power Stations."""
 import logging
 from typing import Any
 
@@ -28,6 +28,8 @@ async def async_setup_entry(
         entities.append(PowerStationACOutputSwitch(coordinator, entry))
     if "switch_dc" in coordinator.data:
         entities.append(PowerStationDCOutputSwitch(coordinator, entry))
+    if "switch_usb" in coordinator.data:
+        entities.append(PowerStationUSBOutputSwitch(coordinator, entry))
 
     # Feature switches
     if "switch_buzzer" in coordinator.data:
@@ -47,11 +49,15 @@ class PowerStationSwitchBase(CoordinatorEntity, SwitchEntity):
         super().__init__(coordinator)
         self._entry = entry
         self._switch_code = switch_code
+        
+        # Get device name from entry title
+        device_name = entry.title
+        
         self._attr_device_info = {
             "identifiers": {(DOMAIN, entry.entry_id)},
-            "name": "2E Syayvo",
-            "manufacturer": "2E",
-            "model": "Power Station",
+            "name": device_name,
+            "manufacturer": "Tuya",
+            "model": "Portable Power Station",
         }
 
     @property
@@ -102,6 +108,21 @@ class PowerStationDCOutputSwitch(PowerStationSwitchBase):
     def unique_id(self) -> str:
         """Унікальний ID перемикача."""
         return f"{self._entry.entry_id}_dc_output"
+
+
+class PowerStationUSBOutputSwitch(PowerStationSwitchBase):
+    """Перемикач USB виходу."""
+
+    def __init__(self, coordinator, entry: ConfigEntry) -> None:
+        """Ініціалізація перемикача."""
+        super().__init__(coordinator, entry, "switch_usb")
+        self._attr_name = "USB Enabled"
+        self._attr_icon = "mdi:usb-port"
+
+    @property
+    def unique_id(self) -> str:
+        """Унікальний ID перемикача."""
+        return f"{self._entry.entry_id}_usb_output"
 
 
 class PowerStationBuzzerSwitch(PowerStationSwitchBase):

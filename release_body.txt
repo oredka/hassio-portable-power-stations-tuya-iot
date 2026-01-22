@@ -1,15 +1,18 @@
-### Added
-- Battery Power sensor for Energy Dashboard integration (sensor.battery_power)
-- Energy Dashboard documentation with setup instructions (ENERGY_DASHBOARD.md)
-- Support for Home Assistant Energy Dashboard battery configuration
+## Release 2.2.0 - Multi-device & Energy Dashboard Support
 
-### Changed
-- Code refactoring: improved API client readability and removed unused methods
-- Removed unnecessary utility scripts and files
-- Simplified error handling and logging
+This release brings official support for the **Apower 2000** station and several improvements to the Energy Dashboard integration.
 
-### Removed
-- GitLab CI/CD files (.gitlab-ci.yml, create_gitlab_release.py)
-- Unused utility scripts (create_github_release.py, list_devices.py)
-- Unused sensor data processor file
-- Installation documentation (moved to README)
+### What's New
+- **Multi-device Support**: Officially added support for **Apower 2000** portable power stations.
+- **USB Output Control**: Added `switch.usb_enabled` to control USB output for compatible stations.
+- **Energy Dashboard Support**: Added `Battery Charge Energy` and `Battery Discharge Energy` sensors (kWh) for stations that report them.
+- **USB Status**: Added `binary_sensor.usb_output_status` for monitoring USB port activity.
+- **Official Branding**: Added official Tuya icons and branding to the integration.
+
+### Fixes and Improvements
+- **Power Scaling**: Fixed power readings for stations using 1W units (removed incorrect division by 10 for values > 1000W).
+- **Energy Dashboard**: Corrected `Battery Power` sensor logic (positive = discharge, negative = charge) to match Home Assistant standards.
+- **Translations**: Improved English and Ukrainian translations, removing model-specific names from the setup flow.
+
+### Installation
+Update via HACS or by copying the `custom_components/tuya_iot_power_stations` folder to your Home Assistant installation.

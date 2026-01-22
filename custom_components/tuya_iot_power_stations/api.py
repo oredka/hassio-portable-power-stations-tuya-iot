@@ -1,4 +1,4 @@
-"""API клієнт для Tuya IoT Power Stations (2E Syayvo)."""
+"""API клієнт для Tuya IoT Power Stations."""
 import logging
 from typing import Any
 

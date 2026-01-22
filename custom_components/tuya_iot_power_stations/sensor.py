@@ -1,4 +1,4 @@
-"""Датчики для Tuya IoT Power Stations (2E Syayvo)."""
+"""Датчики для Tuya IoT Power Stations."""
 import logging
 from typing import Any
 
@@ -69,6 +69,11 @@ async def async_setup_entry(
         entities.append(PowerStationBatteryPowerSensor(coordinator, entry))
 
     # Other sensors
+    if "charge_energy" in coordinator.data:
+        entities.append(PowerStationChargeEnergySensor(coordinator, entry))
+    if "discharge_energy" in coordinator.data:
+        entities.append(PowerStationDischargeEnergySensor(coordinator, entry))
+
     if "temp_current" in coordinator.data:
         entities.append(PowerStationTemperatureSensor(coordinator, entry))
     if "ac_voltage_freq" in coordinator.data:
@@ -88,11 +93,15 @@ class PowerStationSensorBase(CoordinatorEntity, SensorEntity):
         """Ініціалізація датчика."""
         super().__init__(coordinator)
         self._entry = entry
+        
+        # Get device name from entry title or coordinator data if available
+        device_name = entry.title
+        
         self._attr_device_info = {
             "identifiers": {(DOMAIN, entry.entry_id)},
-            "name": "2E Syayvo",
-            "manufacturer": "2E",
-            "model": "Power Station",
+            "name": device_name,
+            "manufacturer": "Tuya",
+            "model": "Portable Power Station",
         }
 
 
@@ -133,7 +142,7 @@ class PowerStationInputPowerSensor(PowerStationSensorBase):
     def native_value(self) -> float | None:
         """Поточне значення датчика."""
         power = self.coordinator.data.get("total_input_power", 0)
-        return float(power) / 10.0 if power > 1000 else float(power)
+        return float(power)
 
 
 class PowerStationOutputPowerSensor(PowerStationSensorBase):
@@ -154,7 +163,7 @@ class PowerStationOutputPowerSensor(PowerStationSensorBase):
     def native_value(self) -> float | None:
         """Поточне значення датчика."""
         power = self.coordinator.data.get("total_output_power", 0)
-        return float(power) / 10.0 if power > 1000 else float(power)
+        return float(power)
 
 
 class PowerStationACPowerSensor(PowerStationSensorBase):
@@ -175,7 +184,7 @@ class PowerStationACPowerSensor(PowerStationSensorBase):
     def native_value(self) -> float | None:
         """Поточне значення датчика."""
         power = self.coordinator.data.get("ac_output_power", 0)
-        return float(power) / 10.0 if power > 1000 else float(power)
+        return float(power)
 
 
 class PowerStationDCPowerSensor(PowerStationSensorBase):
@@ -196,7 +205,7 @@ class PowerStationDCPowerSensor(PowerStationSensorBase):
     def native_value(self) -> float | None:
         """Поточне значення датчика."""
         power = self.coordinator.data.get("dc_output_power", 0)
-        return float(power) / 10.0 if power > 1000 else float(power)
+        return float(power)
 
 
 class PowerStationUSBPowerSensor(PowerStationSensorBase):
@@ -222,7 +231,7 @@ class PowerStationUSBPowerSensor(PowerStationSensorBase):
     def native_value(self) -> float | None:
         """Поточне значення датчика."""
         power = self.coordinator.data.get(f"usb{self._port_num}_output_power", 0)
-        return float(power) / 10.0 if power > 1000 else float(power)
+        return float(power)
 
 
 class PowerStationUSBCPowerSensor(PowerStationSensorBase):
@@ -248,7 +257,7 @@ class PowerStationUSBCPowerSensor(PowerStationSensorBase):
     def native_value(self) -> float | None:
         """Поточне значення датчика."""
         power = self.coordinator.data.get(f"usb_c{self._port_num}_output_power", 0)
-        return float(power) / 10.0 if power > 1000 else float(power)
+        return float(power)
 
 
 class PowerStationTemperatureSensor(PowerStationSensorBase):
@@ -396,12 +405,8 @@ class PowerStationBatteryPowerSensor(PowerStationSensorBase):
         output_power = self.coordinator.data.get("total_output_power", 0)
         input_power = self.coordinator.data.get("total_input_power", 0)
 
-        # Нормалізуємо значення якщо потрібно
-        output = float(output_power) / 10.0 if output_power > 1000 else float(output_power)
-        input_val = float(input_power) / 10.0 if input_power > 1000 else float(input_power)
-
         # Розряд (позитивне) - заряд (негативне)
-        return output - input_val
+        return float(output_power) - float(input_power)
 
 
 # Timer sensors (read-only) - cannot be changed via Tuya API
